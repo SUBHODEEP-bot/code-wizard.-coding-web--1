@@ -4,23 +4,50 @@ import { Sidebar } from '@/components/Sidebar';
 import { PromptInput } from '@/components/PromptInput';
 import { CodeDisplay } from '@/components/CodeDisplay';
 import { FeatureCard } from '@/components/FeatureCard';
-import { ApiKeyModal } from '@/components/ApiKeyModal';
-import { Code, Sparkles, Mic, Brain } from 'lucide-react';
+import { Code } from 'lucide-react';
+import { features } from '@/data/features';
+import { aiService } from '@/services/aiService';
+import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [selectedFeature, setSelectedFeature] = useState('prompt-to-code');
   const [code, setCode] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showApiModal, setShowApiModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handlePromptSubmit = async (prompt: string) => {
+    const currentFeature = features.find(f => f.id === selectedFeature);
+    if (!currentFeature) return;
+
     console.log('Processing prompt:', prompt, 'for feature:', selectedFeature);
     setIsProcessing(true);
-    // Simulate API processing
-    setTimeout(() => {
-      setCode(`// Generated code for: ${prompt}\nfunction example() {\n  console.log("Hello, World!");\n  return true;\n}`);
+    setError(null);
+    setCode('');
+
+    try {
+      const result = await aiService.processPrompt(
+        prompt, 
+        selectedFeature, 
+        currentFeature.apiProvider
+      );
+      
+      setCode(result);
+      toast({
+        title: "Success!",
+        description: "Code generated successfully using AI",
+      });
+    } catch (error) {
+      console.error('Error processing prompt:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
       setIsProcessing(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -28,7 +55,6 @@ const Index = () => {
       <Sidebar 
         selectedFeature={selectedFeature} 
         onFeatureSelect={setSelectedFeature}
-        onApiKeysClick={() => setShowApiModal(true)}
       />
       
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -41,13 +67,13 @@ const Index = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold">AI Coder Assistant</h1>
-                <p className="text-sm text-gray-400">Powered by Gemini & OpenAI</p>
+                <p className="text-sm text-gray-400">Powered by OpenAI & Gemini</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               <div className="flex items-center space-x-1 text-sm text-green-400">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span>Connected</span>
+                <span>Live APIs Connected</span>
               </div>
             </div>
           </div>
@@ -75,15 +101,11 @@ const Index = () => {
             <CodeDisplay 
               code={code}
               isProcessing={isProcessing}
+              error={error}
             />
           </div>
         </div>
       </div>
-
-      <ApiKeyModal 
-        isOpen={showApiModal}
-        onClose={() => setShowApiModal(false)}
-      />
     </div>
   );
 };

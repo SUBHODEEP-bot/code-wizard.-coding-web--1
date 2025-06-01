@@ -1,9 +1,10 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Send, Mic, MicOff, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { features } from '@/data/features';
+import { toast } from '@/hooks/use-toast';
 
 interface PromptInputProps {
   onSubmit: (prompt: string) => void;
@@ -14,6 +15,7 @@ interface PromptInputProps {
 export const PromptInput = ({ onSubmit, isProcessing, selectedFeature }: PromptInputProps) => {
   const [prompt, setPrompt] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const currentFeature = features.find(f => f.id === selectedFeature);
   const placeholder = currentFeature?.examplePrompt || 'Enter your coding request...';
@@ -33,9 +35,65 @@ export const PromptInput = ({ onSubmit, isProcessing, selectedFeature }: PromptI
   };
 
   const toggleVoiceInput = () => {
-    setIsListening(!isListening);
-    // Voice input implementation would go here
-    console.log('Voice input toggled:', !isListening);
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast({
+        title: "Voice input not supported",
+        description: "Your browser doesn't support voice input",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+    } else {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        toast({
+          title: "Listening...",
+          description: "Speak your coding request",
+        });
+      };
+
+      recognition.onresult = (event) => {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
+        }
+        if (finalTranscript) {
+          setPrompt(prev => prev + ' ' + finalTranscript);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        toast({
+          title: "Voice input error",
+          description: "Failed to process voice input",
+          variant: "destructive",
+        });
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    }
   };
 
   const quickPrompts = [
@@ -66,6 +124,7 @@ export const PromptInput = ({ onSubmit, isProcessing, selectedFeature }: PromptI
               variant="ghost"
               onClick={toggleVoiceInput}
               className={`p-2 ${isListening ? 'text-red-400 hover:text-red-300' : 'text-gray-400 hover:text-gray-300'}`}
+              disabled={isProcessing}
             >
               {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
             </Button>
@@ -104,13 +163,15 @@ export const PromptInput = ({ onSubmit, isProcessing, selectedFeature }: PromptI
         </div>
       </div>
 
-      {/* AI Enhancement Toggle */}
+      {/* AI Enhancement Status */}
       <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
         <div className="flex items-center space-x-2">
           <Sparkles className="h-4 w-4 text-yellow-400" />
-          <span className="text-sm text-gray-300">AI Enhancement</span>
+          <span className="text-sm text-gray-300">AI Models</span>
         </div>
-        <div className="text-xs text-green-400">Enabled</div>
+        <div className="text-xs text-green-400">
+          {currentFeature?.apiProvider} Active
+        </div>
       </div>
     </div>
   );
