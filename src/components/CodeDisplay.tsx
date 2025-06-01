@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Copy, Download, Eye, Code2, Terminal, AlertCircle, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -65,6 +64,63 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
       'refactoring': 'REFACTORING'
     };
     return featureNames[featureId] || 'PROCESSING';
+  };
+
+  const extractCodeOnly = (content: string): string => {
+    // Remove explanations and keep only code blocks
+    const codeBlockRegex = /```[\s\S]*?```/g;
+    const codeBlocks = content.match(codeBlockRegex);
+    
+    if (codeBlocks) {
+      return codeBlocks
+        .map(block => block.replace(/```\w*\n?/g, '').replace(/```/g, ''))
+        .join('\n\n');
+    }
+    
+    // If no code blocks found, try to extract code-like content
+    const lines = content.split('\n');
+    const codeLines = lines.filter(line => {
+      const trimmed = line.trim();
+      return trimmed && 
+             !trimmed.startsWith('**') && 
+             !trimmed.startsWith('##') && 
+             !trimmed.startsWith('Here') &&
+             !trimmed.startsWith('This') &&
+             !trimmed.startsWith('The') &&
+             !trimmed.includes('explanation') &&
+             !trimmed.includes('analysis');
+    });
+    
+    return codeLines.length > 0 ? codeLines.join('\n') : content;
+  };
+
+  const extractExplanation = (content: string): string => {
+    // Extract explanations and analysis
+    const lines = content.split('\n');
+    const explanationLines = lines.filter(line => {
+      const trimmed = line.trim();
+      return trimmed && 
+             (trimmed.startsWith('**') || 
+              trimmed.startsWith('##') || 
+              trimmed.startsWith('Here') ||
+              trimmed.startsWith('This') ||
+              trimmed.startsWith('The') ||
+              trimmed.includes('explanation') ||
+              trimmed.includes('analysis') ||
+              trimmed.includes('breakdown') ||
+              (!trimmed.includes('def ') && 
+               !trimmed.includes('function ') && 
+               !trimmed.includes('class ') &&
+               !trimmed.includes('import ') &&
+               !trimmed.includes('const ') &&
+               !trimmed.includes('let ') &&
+               !trimmed.includes('{') &&
+               !trimmed.includes('}') &&
+               !trimmed.includes(';') &&
+               trimmed.length > 20));
+    });
+    
+    return explanationLines.length > 0 ? explanationLines.join('\n') : 'No detailed explanation available for this code.';
   };
 
   if (isProcessing) {
@@ -139,6 +195,8 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
   }
 
   const language = selectedLanguage?.name.toLowerCase() || detectLanguage(code);
+  const cleanCode = extractCodeOnly(code);
+  const explanation = extractExplanation(code);
 
   return (
     <div className="h-full flex flex-col bg-gray-950 relative overflow-hidden">
@@ -200,7 +258,7 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
         <TabsContent value="code" className="flex-1 m-0 overflow-hidden">
           <div className="h-full bg-black/50 p-4 overflow-auto custom-scrollbar backdrop-blur-sm">
             <pre className="text-sm text-green-300 font-mono whitespace-pre-wrap leading-relaxed">
-              <code>{code}</code>
+              <code>{cleanCode}</code>
             </pre>
           </div>
         </TabsContent>
@@ -217,11 +275,11 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
                   </div>
                   <div>
                     <span className="text-blue-400">LINES:</span>
-                    <span className="text-white ml-2">{code.split('\n').length}</span>
+                    <span className="text-white ml-2">{cleanCode.split('\n').length}</span>
                   </div>
                   <div>
                     <span className="text-blue-400">CHARACTERS:</span>
-                    <span className="text-white ml-2">{code.length}</span>
+                    <span className="text-white ml-2">{cleanCode.length}</span>
                   </div>
                   <div>
                     <span className="text-blue-400">FILE_EXT:</span>
@@ -233,10 +291,18 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
                   </div>
                   <div>
                     <span className="text-blue-400">WORDS:</span>
-                    <span className="text-white ml-2">{code.split(/\s+/).length}</span>
+                    <span className="text-white ml-2">{cleanCode.split(/\s+/).length}</span>
                   </div>
                 </div>
               </div>
+              
+              <div className="bg-gray-900/80 border border-blue-500/30 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-blue-400 mb-3 font-mono">CODE_EXPLANATION</h4>
+                <div className="text-sm text-gray-300 font-mono whitespace-pre-wrap leading-relaxed">
+                  {explanation}
+                </div>
+              </div>
+              
               <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-600/30 p-4 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <Shield className="h-4 w-4 text-yellow-400" />

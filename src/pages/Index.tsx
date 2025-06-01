@@ -5,6 +5,7 @@ import { PromptInput } from '@/components/PromptInput';
 import { CodeDisplay } from '@/components/CodeDisplay';
 import { FeatureCard } from '@/components/FeatureCard';
 import { LanguageSelector, programmingLanguages, ProgrammingLanguage } from '@/components/LanguageSelector';
+import { LanguageTranslator } from '@/components/LanguageTranslator';
 import { HackerTerminal } from '@/components/HackerTerminal';
 import { Code, Zap, Shield, Cpu, Network } from 'lucide-react';
 import { features } from '@/data/features';
@@ -76,6 +77,9 @@ const Index = () => {
     }
   };
 
+  // Check if current feature is language translator
+  const isLanguageTranslator = selectedFeature === 'translator';
+
   return (
     <div className="flex h-screen bg-black text-green-400 relative overflow-hidden">
       {/* Matrix-style background effect */}
@@ -109,11 +113,13 @@ const Index = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <LanguageSelector 
-                selectedLanguage={selectedLanguage}
-                onLanguageChange={setSelectedLanguage}
-                compact={true}
-              />
+              {!isLanguageTranslator && (
+                <LanguageSelector 
+                  selectedLanguage={selectedLanguage}
+                  onLanguageChange={setSelectedLanguage}
+                  compact={true}
+                />
+              )}
               <div className="flex items-center space-x-2 px-3 py-1 bg-gray-900 border border-green-500/30 rounded-lg">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -130,45 +136,53 @@ const Index = () => {
           </div>
         </header>
 
-        {/* Main hacker interface with proper scrolling */}
-        <div className="flex-1 flex overflow-hidden min-h-0">
-          {/* Left Panel - Enhanced with hacker styling and proper scrolling */}
-          <div className="w-1/2 border-r border-green-500/30 flex flex-col bg-gray-950/50 backdrop-blur-sm overflow-hidden">
-            <div className="p-6 border-b border-green-500/20 bg-gradient-to-r from-gray-900 to-gray-800 flex-shrink-0">
-              <FeatureCard selectedFeature={selectedFeature} selectedLanguage={selectedLanguage} />
-            </div>
-            
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
-              <div className="p-6 relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-400/10 to-transparent rounded-full blur-xl"></div>
-                <PromptInput 
-                  onSubmit={handlePromptSubmit}
-                  isProcessing={isProcessing}
-                  selectedFeature={selectedFeature}
-                  selectedLanguage={selectedLanguage}
-                  existingCode={code}
-                />
+        {/* Main content */}
+        {isLanguageTranslator ? (
+          <div className="flex-1 overflow-hidden">
+            <LanguageTranslator />
+          </div>
+        ) : (
+          <div className="flex-1 flex overflow-hidden min-h-0">
+            {/* Left Panel - Enhanced with hacker styling and proper scrolling */}
+            <div className="w-1/2 border-r border-green-500/30 flex flex-col bg-gray-950/50 backdrop-blur-sm overflow-hidden">
+              <div className="p-6 border-b border-green-500/20 bg-gradient-to-r from-gray-900 to-gray-800 flex-shrink-0">
+                <FeatureCard selectedFeature={selectedFeature} selectedLanguage={selectedLanguage} />
+              </div>
+              
+              <div className="flex-1 overflow-y-auto custom-scrollbar">
+                <div className="p-6 relative">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-400/10 to-transparent rounded-full blur-xl"></div>
+                  <PromptInput 
+                    onSubmit={handlePromptSubmit}
+                    isProcessing={isProcessing}
+                    selectedFeature={selectedFeature}
+                    selectedLanguage={selectedLanguage}
+                    existingCode={code}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Right Panel - Code display with hacker theme and proper scrolling */}
-          <div className="flex-1 flex flex-col bg-gray-950/70 backdrop-blur-sm overflow-hidden">
-            <CodeDisplay 
-              code={code}
-              isProcessing={isProcessing}
-              error={error}
-              selectedLanguage={selectedLanguage}
-              selectedFeature={selectedFeature}
-            />
+            {/* Right Panel - Code display with hacker theme and proper scrolling */}
+            <div className="flex-1 flex flex-col bg-gray-950/70 backdrop-blur-sm overflow-hidden">
+              <CodeDisplay 
+                code={code}
+                isProcessing={isProcessing}
+                error={error}
+                selectedLanguage={selectedLanguage}
+                selectedFeature={selectedFeature}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Status bar */}
         <div className="h-8 bg-gray-950 border-t border-green-500/30 flex items-center justify-between px-4 text-xs font-mono flex-shrink-0">
           <div className="flex items-center space-x-4">
             <span className="text-green-400">STATUS: OPERATIONAL</span>
-            <span className="text-blue-400">LANG: {selectedLanguage.name.toUpperCase()}</span>
+            {!isLanguageTranslator && (
+              <span className="text-blue-400">LANG: {selectedLanguage.name.toUpperCase()}</span>
+            )}
             <span className="text-purple-400">MODEL: MULTI_NEURAL</span>
           </div>
           <div className="flex items-center space-x-2">
