@@ -25,10 +25,29 @@ const Index = () => {
     console.log('Processing prompt:', prompt, 'for feature:', selectedFeature, 'in language:', selectedLanguage.name);
     setIsProcessing(true);
     setError(null);
-    setCode('');
+    
+    // Don't clear code for core module features if code already exists
+    const coreFeatures = ['prompt-to-code', 'code-explanation', 'code-review', 'bug-fixing', 'code-optimization', 'refactoring'];
+    if (!coreFeatures.includes(selectedFeature) || !code) {
+      setCode('');
+    }
 
     try {
-      const enhancedPrompt = `${prompt}\n\nPlease provide the solution in ${selectedLanguage.name} programming language. Use proper ${selectedLanguage.name} syntax and best practices.`;
+      let enhancedPrompt = '';
+      
+      if (selectedFeature === 'code-explanation' && code) {
+        enhancedPrompt = `Explain this ${selectedLanguage.name} code in detail:\n\n${code}\n\nAdditional context: ${prompt}`;
+      } else if (selectedFeature === 'code-review' && code) {
+        enhancedPrompt = `Review this ${selectedLanguage.name} code and provide feedback:\n\n${code}\n\nSpecific areas to focus on: ${prompt}`;
+      } else if (selectedFeature === 'bug-fixing' && code) {
+        enhancedPrompt = `Find and fix bugs in this ${selectedLanguage.name} code:\n\n${code}\n\nIssue description: ${prompt}`;
+      } else if (selectedFeature === 'code-optimization' && code) {
+        enhancedPrompt = `Optimize this ${selectedLanguage.name} code for better performance:\n\n${code}\n\nOptimization goals: ${prompt}`;
+      } else if (selectedFeature === 'refactoring' && code) {
+        enhancedPrompt = `Refactor this ${selectedLanguage.name} code to improve readability and maintainability:\n\n${code}\n\nRefactoring requirements: ${prompt}`;
+      } else {
+        enhancedPrompt = `${prompt}\n\nPlease provide the solution in ${selectedLanguage.name} programming language. Use proper ${selectedLanguage.name} syntax and best practices.`;
+      }
       
       const result = await aiService.processPrompt(
         enhancedPrompt, 
@@ -38,8 +57,8 @@ const Index = () => {
       
       setCode(result);
       toast({
-        title: "SUCCESS: Code Generated",
-        description: `Generated ${selectedLanguage.name} code using ${currentFeature.apiProvider}`,
+        title: "SUCCESS: Code Processed",
+        description: `Processed ${selectedLanguage.name} code using ${currentFeature.apiProvider}`,
         className: "bg-gray-900 border-green-500 text-green-400",
       });
     } catch (error) {
@@ -74,7 +93,7 @@ const Index = () => {
       
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Hacker-style header */}
-        <header className="bg-gray-950 border-b border-green-500/30 p-4 shadow-lg relative">
+        <header className="bg-gray-950 border-b border-green-500/30 p-4 shadow-lg relative flex-shrink-0">
           <div className="absolute inset-0 bg-gradient-to-r from-green-900/10 to-blue-900/10"></div>
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center space-x-4">
@@ -111,38 +130,42 @@ const Index = () => {
           </div>
         </header>
 
-        {/* Main hacker interface */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Left Panel - Enhanced with hacker styling */}
-          <div className="w-1/2 border-r border-green-500/30 flex flex-col bg-gray-950/50 backdrop-blur-sm">
-            <div className="p-6 border-b border-green-500/20 bg-gradient-to-r from-gray-900 to-gray-800">
+        {/* Main hacker interface with proper scrolling */}
+        <div className="flex-1 flex overflow-hidden min-h-0">
+          {/* Left Panel - Enhanced with hacker styling and proper scrolling */}
+          <div className="w-1/2 border-r border-green-500/30 flex flex-col bg-gray-950/50 backdrop-blur-sm overflow-hidden">
+            <div className="p-6 border-b border-green-500/20 bg-gradient-to-r from-gray-900 to-gray-800 flex-shrink-0">
               <FeatureCard selectedFeature={selectedFeature} selectedLanguage={selectedLanguage} />
             </div>
             
-            <div className="flex-1 p-6 relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-400/10 to-transparent rounded-full blur-xl"></div>
-              <PromptInput 
-                onSubmit={handlePromptSubmit}
-                isProcessing={isProcessing}
-                selectedFeature={selectedFeature}
-                selectedLanguage={selectedLanguage}
-              />
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+              <div className="p-6 relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-400/10 to-transparent rounded-full blur-xl"></div>
+                <PromptInput 
+                  onSubmit={handlePromptSubmit}
+                  isProcessing={isProcessing}
+                  selectedFeature={selectedFeature}
+                  selectedLanguage={selectedLanguage}
+                  existingCode={code}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Right Panel - Code display with hacker theme */}
-          <div className="flex-1 flex flex-col bg-gray-950/70 backdrop-blur-sm">
+          {/* Right Panel - Code display with hacker theme and proper scrolling */}
+          <div className="flex-1 flex flex-col bg-gray-950/70 backdrop-blur-sm overflow-hidden">
             <CodeDisplay 
               code={code}
               isProcessing={isProcessing}
               error={error}
               selectedLanguage={selectedLanguage}
+              selectedFeature={selectedFeature}
             />
           </div>
         </div>
 
         {/* Status bar */}
-        <div className="h-8 bg-gray-950 border-t border-green-500/30 flex items-center justify-between px-4 text-xs font-mono">
+        <div className="h-8 bg-gray-950 border-t border-green-500/30 flex items-center justify-between px-4 text-xs font-mono flex-shrink-0">
           <div className="flex items-center space-x-4">
             <span className="text-green-400">STATUS: OPERATIONAL</span>
             <span className="text-blue-400">LANG: {selectedLanguage.name.toUpperCase()}</span>
