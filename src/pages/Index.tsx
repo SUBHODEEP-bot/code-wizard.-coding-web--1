@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { PromptInput } from '@/components/PromptInput';
@@ -11,6 +10,9 @@ import { Code, Zap, Shield, Cpu, Network } from 'lucide-react';
 import { features } from '@/data/features';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
+import { ProjectScaffold } from '@/components/ProjectScaffold';
+import { ErrorExplainer } from '@/components/ErrorExplainer';
+import { LibrarySuggester } from '@/components/LibrarySuggester';
 
 const Index = () => {
   const [selectedFeature, setSelectedFeature] = useState('prompt-to-code');
@@ -77,8 +79,32 @@ const Index = () => {
     }
   };
 
-  // Check if current feature is language translator
+  // Check if current feature is language translator or advanced protocol
   const isLanguageTranslator = selectedFeature === 'translator';
+  const isAdvancedProtocol = ['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(selectedFeature);
+
+  const renderAdvancedProtocol = () => {
+    switch (selectedFeature) {
+      case 'scaffold-generator':
+        return <ProjectScaffold />;
+      case 'error-explainer':
+        return <ErrorExplainer />;
+      case 'library-suggester':
+        return <LibrarySuggester />;
+      case 'style-formatter':
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">STYLE_FORMATTER - Coming Soon</div>;
+      case 'security-scanner':
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">SECURITY_SCANNER - Coming Soon</div>;
+      case 'test-generator':
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">TEST_GENERATOR - Coming Soon</div>;
+      case 'complexity-analyzer':
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">COMPLEXITY_ANALYZER - Coming Soon</div>;
+      case 'code-reviewer':
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">CODE_REVIEWER - Coming Soon</div>;
+      default:
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">ADVANCED_PROTOCOL - Select Feature</div>;
+    }
+  };
 
   return (
     <div className="flex h-screen bg-black text-green-400 relative overflow-hidden">
@@ -140,6 +166,10 @@ const Index = () => {
         {isLanguageTranslator ? (
           <div className="flex-1 overflow-hidden">
             <LanguageTranslator />
+          </div>
+        ) : isAdvancedProtocol ? (
+          <div className="flex-1 overflow-hidden">
+            {renderAdvancedProtocol()}
           </div>
         ) : (
           <div className="flex-1 flex overflow-hidden min-h-0">
