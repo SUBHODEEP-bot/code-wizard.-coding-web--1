@@ -18,7 +18,7 @@ export const ErrorExplainer = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleAnalyze = async () => {
-    if (!errorMessage) {
+    if (!errorMessage.trim()) {
       toast({
         title: "Missing Error Message",
         description: "Please provide the error message to analyze",
@@ -54,9 +54,10 @@ Make it comprehensive but easy to understand.`;
         className: "bg-gray-900 border-green-500 text-green-400"
       });
     } catch (error) {
+      console.error('Error analysis failed:', error);
       toast({
         title: "Analysis Failed",
-        description: "Failed to analyze the error",
+        description: "Failed to analyze the error. Please try again.",
         variant: "destructive"
       });
     } finally {

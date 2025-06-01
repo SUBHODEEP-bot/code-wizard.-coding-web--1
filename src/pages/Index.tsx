@@ -13,6 +13,11 @@ import { toast } from '@/hooks/use-toast';
 import { ProjectScaffold } from '@/components/ProjectScaffold';
 import { ErrorExplainer } from '@/components/ErrorExplainer';
 import { LibrarySuggester } from '@/components/LibrarySuggester';
+import { CodeReviewAssistant } from '@/components/CodeReviewAssistant';
+import { CodeFormatter } from '@/components/CodeFormatter';
+import { SecurityScanner } from '@/components/SecurityScanner';
+import { UnitTestGenerator } from '@/components/UnitTestGenerator';
+import { ComplexityAnalyzer } from '@/components/ComplexityAnalyzer';
 
 const Index = () => {
   const [selectedFeature, setSelectedFeature] = useState('prompt-to-code');
@@ -92,15 +97,15 @@ const Index = () => {
       case 'library-suggester':
         return <LibrarySuggester />;
       case 'style-formatter':
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">STYLE_FORMATTER - Coming Soon</div>;
+        return <CodeFormatter />;
       case 'security-scanner':
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">SECURITY_SCANNER - Coming Soon</div>;
+        return <SecurityScanner />;
       case 'test-generator':
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">TEST_GENERATOR - Coming Soon</div>;
+        return <UnitTestGenerator />;
       case 'complexity-analyzer':
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">COMPLEXITY_ANALYZER - Coming Soon</div>;
+        return <ComplexityAnalyzer />;
       case 'code-reviewer':
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">CODE_REVIEWER - Coming Soon</div>;
+        return <CodeReviewAssistant />;
       default:
         return <div className="flex items-center justify-center h-full text-gray-400 font-mono">ADVANCED_PROTOCOL - Select Feature</div>;
     }
