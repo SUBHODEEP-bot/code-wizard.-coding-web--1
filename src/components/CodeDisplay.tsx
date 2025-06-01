@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { Copy, Download, Eye, Code2, Terminal, AlertCircle } from 'lucide-react';
+import { Copy, Download, Eye, Code2, Terminal, AlertCircle, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
@@ -9,9 +8,10 @@ interface CodeDisplayProps {
   code: string;
   isProcessing: boolean;
   error?: string | null;
+  selectedLanguage?: { name: string; extension: string; color: string; icon: string };
 }
 
-export const CodeDisplay = ({ code, isProcessing, error }: CodeDisplayProps) => {
+export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage }: CodeDisplayProps) => {
   const [activeTab, setActiveTab] = useState('code');
 
   const copyToClipboard = async () => {
@@ -55,12 +55,21 @@ export const CodeDisplay = ({ code, isProcessing, error }: CodeDisplayProps) => 
 
   if (isProcessing) {
     return (
-      <div className="h-full flex items-center justify-center bg-gray-800">
-        <div className="text-center space-y-4">
-          <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
-          <div className="space-y-2">
-            <p className="text-lg font-medium text-white">AI is working...</p>
-            <p className="text-sm text-gray-400">Processing your request with advanced AI models</p>
+      <div className="h-full flex items-center justify-center bg-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-900/10 to-blue-900/10"></div>
+        <div className="text-center space-y-6 relative z-10">
+          <div className="relative">
+            <div className="animate-spin h-12 w-12 border-4 border-green-500 border-t-transparent rounded-full mx-auto"></div>
+            <div className="absolute inset-0 bg-green-400 rounded-full blur-md opacity-30 animate-ping"></div>
+          </div>
+          <div className="space-y-3">
+            <p className="text-xl font-medium text-white font-mono">NEURAL_PROCESSING...</p>
+            <p className="text-sm text-green-400 font-mono">Compiling {selectedLanguage?.name} solution with advanced AI models</p>
+            <div className="flex justify-center space-x-1">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            </div>
           </div>
         </div>
       </div>
@@ -69,15 +78,19 @@ export const CodeDisplay = ({ code, isProcessing, error }: CodeDisplayProps) => 
 
   if (error) {
     return (
-      <div className="h-full flex items-center justify-center bg-gray-800">
-        <div className="text-center space-y-4 max-w-md">
-          <div className="p-4 bg-red-900/20 rounded-full w-fit mx-auto">
-            <AlertCircle className="h-8 w-8 text-red-400" />
+      <div className="h-full flex items-center justify-center bg-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 to-transparent"></div>
+        <div className="text-center space-y-4 max-w-md relative z-10">
+          <div className="relative">
+            <div className="p-4 bg-gradient-to-br from-red-900/40 to-red-800/40 rounded-full w-fit mx-auto border border-red-500/30">
+              <AlertCircle className="h-8 w-8 text-red-400" />
+            </div>
+            <div className="absolute inset-0 bg-red-400 rounded-full blur-lg opacity-20 animate-pulse"></div>
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-medium text-white">Error Processing Request</h3>
-            <p className="text-sm text-red-400 break-words">{error}</p>
-            <p className="text-xs text-gray-500">Please try again or check your API configuration</p>
+            <h3 className="text-lg font-medium text-white font-mono">SYSTEM_ERROR_DETECTED</h3>
+            <p className="text-sm text-red-400 break-words font-mono bg-red-900/20 p-3 rounded border border-red-500/30">{error}</p>
+            <p className="text-xs text-gray-500 font-mono">RETRY_PROTOCOL_RECOMMENDED</p>
           </div>
         </div>
       </div>
@@ -86,15 +99,19 @@ export const CodeDisplay = ({ code, isProcessing, error }: CodeDisplayProps) => 
 
   if (!code) {
     return (
-      <div className="h-full flex items-center justify-center bg-gray-800">
-        <div className="text-center space-y-4 max-w-md">
-          <div className="p-4 bg-gray-700 rounded-full w-fit mx-auto">
-            <Code2 className="h-8 w-8 text-gray-400" />
+      <div className="h-full flex items-center justify-center bg-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-900/10 to-blue-900/10"></div>
+        <div className="text-center space-y-4 max-w-md relative z-10">
+          <div className="relative">
+            <div className="p-4 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full w-fit mx-auto border border-green-500/30">
+              <Code2 className="h-8 w-8 text-green-400" />
+            </div>
+            <div className="absolute inset-0 bg-green-400 rounded-full blur-lg opacity-20 animate-pulse"></div>
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-medium text-white">Ready to code</h3>
-            <p className="text-sm text-gray-400">
-              Enter a prompt on the left to get started with AI-powered coding assistance
+            <h3 className="text-lg font-medium text-white font-mono">NEURAL_INTERFACE_READY</h3>
+            <p className="text-sm text-green-400 font-mono">
+              Initialize coding protocol with {selectedLanguage?.name || 'preferred'} language
             </p>
           </div>
         </div>
@@ -102,67 +119,102 @@ export const CodeDisplay = ({ code, isProcessing, error }: CodeDisplayProps) => 
     );
   }
 
-  const language = detectLanguage(code);
+  const language = selectedLanguage?.name.toLowerCase() || detectLanguage(code);
 
   return (
-    <div className="h-full flex flex-col bg-gray-800">
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <div className="flex items-center space-x-2">
-          <h3 className="text-lg font-medium text-white">Generated Code</h3>
-          <span className="px-2 py-1 text-xs bg-blue-600 text-white rounded">
-            {language.toUpperCase()}
-          </span>
+    <div className="h-full flex flex-col bg-gray-950 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-green-900/5 to-blue-900/5"></div>
+      
+      <div className="flex items-center justify-between p-4 border-b border-green-500/30 bg-gray-900/80 backdrop-blur-sm relative z-10">
+        <div className="flex items-center space-x-3">
+          <Terminal className="h-5 w-5 text-green-400" />
+          <h3 className="text-lg font-medium text-white font-mono">COMPILED_OUTPUT</h3>
+          <div className="flex items-center space-x-2 px-3 py-1 bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-400/30 rounded">
+            <span className="text-sm">{selectedLanguage?.icon}</span>
+            <span className="text-xs font-mono text-green-400">
+              {selectedLanguage?.name.toUpperCase() || language.toUpperCase()}
+            </span>
+          </div>
         </div>
         <div className="flex space-x-2">
-          <Button size="sm" variant="ghost" onClick={copyToClipboard}>
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            onClick={copyToClipboard}
+            className="text-green-400 hover:text-green-300 hover:bg-green-900/20 border border-green-500/30 font-mono"
+          >
             <Copy className="h-4 w-4 mr-1" />
-            Copy
+            COPY
           </Button>
-          <Button size="sm" variant="ghost" onClick={downloadCode}>
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            onClick={downloadCode}
+            className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 border border-blue-500/30 font-mono"
+          >
             <Download className="h-4 w-4 mr-1" />
-            Download
+            EXPORT
           </Button>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <TabsList className="grid w-full grid-cols-2 bg-gray-700">
-          <TabsTrigger value="code" className="flex items-center space-x-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col relative z-10">
+        <TabsList className="grid w-full grid-cols-2 bg-gray-900/80 backdrop-blur-sm border-b border-green-500/30">
+          <TabsTrigger 
+            value="code" 
+            className="flex items-center space-x-2 font-mono data-[state=active]:bg-green-600/20 data-[state=active]:text-green-400"
+          >
             <Code2 className="h-4 w-4" />
-            <span>Code</span>
+            <span>SOURCE_CODE</span>
           </TabsTrigger>
-          <TabsTrigger value="analysis" className="flex items-center space-x-2">
+          <TabsTrigger 
+            value="analysis" 
+            className="flex items-center space-x-2 font-mono data-[state=active]:bg-blue-600/20 data-[state=active]:text-blue-400"
+          >
             <Eye className="h-4 w-4" />
-            <span>Analysis</span>
+            <span>ANALYSIS</span>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="code" className="flex-1 m-0">
-          <div className="h-full bg-gray-900 p-4 overflow-auto">
-            <pre className="text-sm text-gray-300 font-mono whitespace-pre-wrap leading-relaxed">
+          <div className="h-full bg-black/50 p-4 overflow-auto custom-scrollbar backdrop-blur-sm">
+            <pre className="text-sm text-green-300 font-mono whitespace-pre-wrap leading-relaxed">
               <code>{code}</code>
             </pre>
           </div>
         </TabsContent>
 
         <TabsContent value="analysis" className="flex-1 m-0">
-          <div className="h-full bg-gray-800 p-4 overflow-auto">
+          <div className="h-full bg-gray-950/80 p-4 overflow-auto custom-scrollbar backdrop-blur-sm">
             <div className="space-y-4">
-              <div className="bg-gray-700 p-3 rounded-lg">
-                <h4 className="text-sm font-semibold text-white mb-2">Code Analysis</h4>
-                <p className="text-xs text-gray-300">
-                  Language: <span className="text-blue-400">{language}</span>
-                </p>
-                <p className="text-xs text-gray-300">
-                  Lines: <span className="text-blue-400">{code.split('\n').length}</span>
-                </p>
-                <p className="text-xs text-gray-300">
-                  Characters: <span className="text-blue-400">{code.length}</span>
-                </p>
+              <div className="bg-gray-900/80 border border-green-500/30 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-green-400 mb-3 font-mono">SYSTEM_ANALYSIS</h4>
+                <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+                  <div>
+                    <span className="text-blue-400">LANGUAGE:</span>
+                    <span className="text-white ml-2">{selectedLanguage?.name || language}</span>
+                  </div>
+                  <div>
+                    <span className="text-blue-400">LINES:</span>
+                    <span className="text-white ml-2">{code.split('\n').length}</span>
+                  </div>
+                  <div>
+                    <span className="text-blue-400">CHARACTERS:</span>
+                    <span className="text-white ml-2">{code.length}</span>
+                  </div>
+                  <div>
+                    <span className="text-blue-400">FILE_EXT:</span>
+                    <span className="text-white ml-2">{selectedLanguage?.extension || '.txt'}</span>
+                  </div>
+                </div>
               </div>
-              <div className="bg-blue-900/20 border border-blue-800 p-3 rounded-lg">
-                <p className="text-sm text-blue-200">
-                  💡 This code was generated by AI. Please review and test thoroughly before using in production.
+              <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-600/30 p-4 rounded-lg">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Shield className="h-4 w-4 text-yellow-400" />
+                  <span className="text-sm text-yellow-400 font-mono">SECURITY_NOTICE</span>
+                </div>
+                <p className="text-sm text-yellow-200 font-mono">
+                  Neural-generated code requires thorough validation before production deployment
                 </p>
               </div>
             </div>

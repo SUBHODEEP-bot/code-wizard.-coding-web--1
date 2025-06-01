@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -98,4 +92,141 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom Hacker Styling */
+@layer components {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #10b981 #1f2937;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #10b981, #3b82f6);
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #059669, #2563eb);
+  }
+
+  /* Matrix rain effect */
+  @keyframes matrix-rain {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+
+  .matrix-char {
+    animation: matrix-rain 3s linear infinite;
+    color: #10b981;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+  }
+
+  /* Glitch effect */
+  @keyframes glitch {
+    0% {
+      text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff,
+        0.025em 0.05em 0 #ffff00;
+    }
+    15% {
+      text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff,
+        0.025em 0.05em 0 #ffff00;
+    }
+    16% {
+      text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff,
+        -0.05em -0.05em 0 #ffff00;
+    }
+    49% {
+      text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff,
+        -0.05em -0.05em 0 #ffff00;
+    }
+    50% {
+      text-shadow: 0.025em 0.05em 0 #00ffff, 0.05em 0 0 #ff00ff,
+        0 -0.05em 0 #ffff00;
+    }
+    99% {
+      text-shadow: 0.025em 0.05em 0 #00ffff, 0.05em 0 0 #ff00ff,
+        0 -0.05em 0 #ffff00;
+    }
+    100% {
+      text-shadow: -0.025em 0 0 #00ffff, -0.025em -0.025em 0 #ff00ff,
+        -0.025em -0.05em 0 #ffff00;
+    }
+  }
+
+  .glitch-text {
+    animation: glitch 0.3s infinite;
+  }
+
+  /* Neon glow effects */
+  .neon-green {
+    box-shadow: 0 0 5px #10b981, 0 0 10px #10b981, 0 0 15px #10b981;
+  }
+
+  .neon-blue {
+    box-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6, 0 0 15px #3b82f6;
+  }
+
+  /* Terminal cursor */
+  .terminal-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1.2em;
+    background-color: #10b981;
+    animation: cursor-blink 1s infinite;
+  }
+
+  @keyframes cursor-blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  /* Hacker grid background */
+  .hacker-grid {
+    background-image: 
+      linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Circuit board pattern */
+  .circuit-pattern {
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(16, 185, 129, 0.2) 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.2) 2px, transparent 2px);
+    background-size: 40px 40px;
+  }
+}
+
+/* Font loading for better monospace rendering */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
