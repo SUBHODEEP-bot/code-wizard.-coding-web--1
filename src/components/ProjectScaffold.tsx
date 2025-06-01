@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Layers, Download, Copy, FileTree } from 'lucide-react';
+import { Layers, Download, Copy, Folder } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
@@ -85,7 +85,7 @@ Make it production-ready with proper structure and best practices.`;
             </div>
           </div>
           <Badge className="bg-gradient-to-r from-green-600 to-blue-600 text-white border-0 font-mono">
-            <FileTree className="h-3 w-3 mr-1" />
+            <Folder className="h-3 w-3 mr-1" />
             Gemini AI
           </Badge>
         </div>
@@ -159,7 +159,7 @@ Make it production-ready with proper structure and best practices.`;
           code={scaffoldCode}
           isProcessing={isGenerating}
           error={null}
-          selectedLanguage={{ name: 'Project Structure', icon: '📁', color: 'text-blue-400' }}
+          selectedLanguage={{ name: 'Project Structure', extension: 'txt', icon: '📁', color: 'text-blue-400' }}
           selectedFeature="scaffold-generator"
         />
       </div>

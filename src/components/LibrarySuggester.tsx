@@ -181,7 +181,7 @@ Focus on actively maintained, well-documented libraries with good community supp
           code={suggestions}
           isProcessing={isAnalyzing}
           error={null}
-          selectedLanguage={{ name: 'Library Recommendations', icon: '📦', color: 'text-yellow-400' }}
+          selectedLanguage={{ name: 'Library Recommendations', extension: 'md', icon: '📦', color: 'text-yellow-400' }}
           selectedFeature="library-suggester"
         />
       </div>

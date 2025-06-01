@@ -146,7 +146,7 @@ Make it comprehensive but easy to understand.`;
           code={explanation}
           isProcessing={isAnalyzing}
           error={null}
-          selectedLanguage={{ name: 'Error Analysis', icon: '🔍', color: 'text-red-400' }}
+          selectedLanguage={{ name: 'Error Analysis', extension: 'md', icon: '🔍', color: 'text-red-400' }}
           selectedFeature="error-explainer"
         />
       </div>
