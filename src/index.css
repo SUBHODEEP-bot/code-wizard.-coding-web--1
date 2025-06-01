@@ -94,14 +94,7 @@
   }
 }
 
-/* Font loading for better monospace rendering */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-
-body {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-}
-
-/* Enhanced Hacker Styling */
+/* Custom Hacker Styling */
 @layer components {
   .custom-scrollbar {
     scrollbar-width: thin;
@@ -109,27 +102,21 @@ body {
   }
 
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: linear-gradient(180deg, #1f2937, #111827);
-    border-radius: 6px;
+    background: #1f2937;
+    border-radius: 4px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #10b981, #3b82f6);
-    border-radius: 6px;
-    border: 1px solid #065f46;
+    border-radius: 4px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #059669, #2563eb);
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-corner {
-    background: #1f2937;
   }
 
   /* Matrix rain effect */
@@ -153,11 +140,11 @@ body {
   .matrix-char {
     animation: matrix-rain 3s linear infinite;
     color: #10b981;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Courier New', monospace;
     font-weight: bold;
   }
 
-  /* Enhanced Glitch effect */
+  /* Glitch effect */
   @keyframes glitch {
     0% {
       text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff,
@@ -190,32 +177,16 @@ body {
   }
 
   .glitch-text {
-    animation: glitch 2s infinite;
+    animation: glitch 0.3s infinite;
   }
 
-  /* Enhanced neon glow effects */
+  /* Neon glow effects */
   .neon-green {
-    box-shadow: 
-      0 0 5px #10b981, 
-      0 0 10px #10b981, 
-      0 0 15px #10b981,
-      0 0 20px #10b981;
+    box-shadow: 0 0 5px #10b981, 0 0 10px #10b981, 0 0 15px #10b981;
   }
 
   .neon-blue {
-    box-shadow: 
-      0 0 5px #3b82f6, 
-      0 0 10px #3b82f6, 
-      0 0 15px #3b82f6,
-      0 0 20px #3b82f6;
-  }
-
-  .neon-purple {
-    box-shadow: 
-      0 0 5px #8b5cf6, 
-      0 0 10px #8b5cf6, 
-      0 0 15px #8b5cf6,
-      0 0 20px #8b5cf6;
+    box-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6, 0 0 15px #3b82f6;
   }
 
   /* Terminal cursor */
@@ -236,150 +207,26 @@ body {
     }
   }
 
-  /* Enhanced Hacker grid background */
+  /* Hacker grid background */
   .hacker-grid {
     background-image: 
-      linear-gradient(rgba(16, 185, 129, 0.15) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(16, 185, 129, 0.15) 1px, transparent 1px),
-      linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px, 20px 20px, 60px 60px, 60px 60px;
-    background-position: 0 0, 0 0, 10px 10px, 10px 10px;
+      linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 
-  /* Enhanced Circuit board pattern */
+  /* Circuit board pattern */
   .circuit-pattern {
     background-image: 
-      radial-gradient(circle at 25% 25%, rgba(16, 185, 129, 0.3) 2px, transparent 2px),
-      radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.3) 2px, transparent 2px),
-      radial-gradient(circle at 50% 10%, rgba(139, 92, 246, 0.2) 1px, transparent 1px),
-      radial-gradient(circle at 10% 90%, rgba(245, 158, 11, 0.2) 1px, transparent 1px);
-    background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px;
-    background-position: 0 0, 20px 20px, 0 0, 40px 40px;
-  }
-
-  /* Holographic effects */
-  @keyframes hologram {
-    0%, 100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    50% {
-      opacity: 0.8;
-      transform: translateY(-2px);
-    }
-  }
-
-  .hologram {
-    animation: hologram 3s ease-in-out infinite;
-    background: linear-gradient(45deg, transparent 30%, rgba(16, 185, 129, 0.1) 50%, transparent 70%);
-  }
-
-  /* Cyberpunk scan lines */
-  @keyframes scan-lines {
-    0% {
-      background-position: 0 0;
-    }
-    100% {
-      background-position: 0 100px;
-    }
-  }
-
-  .scan-lines {
-    background-image: linear-gradient(
-      transparent 50%,
-      rgba(16, 185, 129, 0.03) 50%,
-      rgba(16, 185, 129, 0.03) 51%,
-      transparent 51%
-    );
-    background-size: 100% 4px;
-    animation: scan-lines 2s linear infinite;
-  }
-
-  /* Data stream effect */
-  @keyframes data-stream {
-    0% {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-  }
-
-  .data-stream {
-    animation: data-stream 3s ease-in-out infinite;
-  }
-
-  /* Enhanced button effects */
-  .hacker-button {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .hacker-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.4), transparent);
-    transition: left 0.5s;
-  }
-
-  .hacker-button:hover::before {
-    left: 100%;
-  }
-
-  /* Quantum field effect */
-  @keyframes quantum-field {
-    0%, 100% {
-      transform: scale(1) rotate(0deg);
-      opacity: 0.1;
-    }
-    50% {
-      transform: scale(1.1) rotate(180deg);
-      opacity: 0.3;
-    }
-  }
-
-  .quantum-field {
-    animation: quantum-field 8s ease-in-out infinite;
+      radial-gradient(circle at 25% 25%, rgba(16, 185, 129, 0.2) 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.2) 2px, transparent 2px);
+    background-size: 40px 40px;
   }
 }
 
-/* Custom dropdown styling to prevent transparency */
-.dropdown-content {
-  background-color: rgb(17, 24, 39) !important;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  z-index: 9999 !important;
-}
+/* Font loading for better monospace rendering */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-/* Enhanced visibility for status bar */
-.status-bar {
-  background: linear-gradient(90deg, rgba(3, 7, 18, 0.95), rgba(17, 24, 39, 0.95)) !important;
-  backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(16, 185, 129, 0.4);
-  min-height: 40px;
-  z-index: 1000;
-}
-
-/* Ensure proper text rendering */
-.force-visible {
-  color: rgb(255, 255, 255) !important;
-  text-shadow: 0 0 1px rgba(16, 185, 129, 0.5);
-}
-
-/* Improve contrast for better visibility */
-.high-contrast {
-  background-color: rgba(0, 0, 0, 0.9) !important;
-  color: rgb(255, 255, 255) !important;
-  border: 1px solid rgba(16, 185, 129, 0.5) !important;
+body {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
