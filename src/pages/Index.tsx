@@ -10,6 +10,14 @@ import { Code, Zap, Shield, Cpu, Network } from 'lucide-react';
 import { features } from '@/data/features';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
+
+// Core Module Components
+import { CodeExplainer } from '@/components/CodeExplainer';
+import { BugFixer } from '@/components/BugFixer';
+import { CodeOptimizer } from '@/components/CodeOptimizer';
+import { CodeRefactorer } from '@/components/CodeRefactorer';
+
+// Advanced Protocol Components
 import { ProjectScaffold } from '@/components/ProjectScaffold';
 import { ErrorExplainer } from '@/components/ErrorExplainer';
 import { LibrarySuggester } from '@/components/LibrarySuggester';
@@ -26,11 +34,33 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const playFeatureSound = (featureId: string) => {
+    // Different sound patterns for different feature categories
+    let audioData = '';
+    
+    if (['prompt-to-code', 'code-explanation', 'code-review', 'bug-fixing', 'code-optimization', 'refactoring'].includes(featureId)) {
+      // Core modules - deep tech sound
+      audioData = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBw==';
+    } else if (['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(featureId)) {
+      // Advanced protocols - sophisticated beep
+      audioData = 'data:audio/wav;base64,UklGRh4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVIBAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB1K47O2cRAcWVLjpzrJuHQU+ltXuu3UsB+jD7e2LTAYYUrzop7JUEAZel+rxtmAcBzWb0PPEhzEIHWO86qRYBQNQstX40YBAAhVUuev4vF0dAhN92OvQwH0dBH2o3vmjRwjrxeHWo2gSETm//fyTRwHrxeH1xGAVFWK36c7XfTUIHW26xuCNRxJAmtP004s3BydOjO7j23UpCCWG0OzHgkYOOILM8NuJNwJOq8OppGcR';
+    } else if (featureId === 'translator') {
+      // Neural interface - unique tone
+      audioData = 'data:audio/wav;base64,UklGRnYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVIBAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB1K47O2cRAcWVLjpzrJuHQU+ltXuu3UsB+jD7e2LTAYYUrzop7JUEAZel+rxtmAcBzWb0PPEhzEIHWO86qRYBQNQstX40YBAAhVUuev4vF0dAhN92OvQwH0dBH2o3vmjRwjrxeHWo2gSETm//fyTRwHrxeH1xGAVFWK36c7XfTUIHW26xuCNRxJAmtP004s3BydOjO7j23UpCCWG0OzHgkYOOILM8NuJNwJOq8OppGcR';
+    }
+    
+    if (audioData) {
+      const audio = new Audio(audioData);
+      audio.play().catch(() => {});
+    }
+  };
+
   const handlePromptSubmit = async (prompt: string) => {
     const currentFeature = features.find(f => f.id === selectedFeature);
     if (!currentFeature) return;
 
     console.log('Processing prompt:', prompt, 'for feature:', selectedFeature, 'in language:', selectedLanguage.name);
+    playFeatureSound(selectedFeature);
     setIsProcessing(true);
     setError(null);
     
@@ -84,9 +114,25 @@ const Index = () => {
     }
   };
 
-  // Check if current feature is language translator or advanced protocol
+  // Check if current feature is language translator or advanced protocol or core module
   const isLanguageTranslator = selectedFeature === 'translator';
   const isAdvancedProtocol = ['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(selectedFeature);
+  const isCoreModule = ['code-explanation', 'bug-fixing', 'code-optimization', 'refactoring'].includes(selectedFeature);
+
+  const renderCoreModule = () => {
+    switch (selectedFeature) {
+      case 'code-explanation':
+        return <CodeExplainer />;
+      case 'bug-fixing':
+        return <BugFixer />;
+      case 'code-optimization':
+        return <CodeOptimizer />;
+      case 'refactoring':
+        return <CodeRefactorer />;
+      default:
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">CORE_MODULE - Select Feature</div>;
+    }
+  };
 
   const renderAdvancedProtocol = () => {
     switch (selectedFeature) {
@@ -122,7 +168,10 @@ const Index = () => {
 
       <Sidebar 
         selectedFeature={selectedFeature} 
-        onFeatureSelect={setSelectedFeature}
+        onFeatureSelect={(feature) => {
+          playFeatureSound(feature);
+          setSelectedFeature(feature);
+        }}
         selectedLanguage={selectedLanguage}
       />
       
@@ -172,11 +221,16 @@ const Index = () => {
           <div className="flex-1 overflow-hidden">
             <LanguageTranslator />
           </div>
+        ) : isCoreModule ? (
+          <div className="flex-1 overflow-hidden">
+            {renderCoreModule()}
+          </div>
         ) : isAdvancedProtocol ? (
           <div className="flex-1 overflow-hidden">
             {renderAdvancedProtocol()}
           </div>
         ) : (
+          // ... keep existing code (main prompt-to-code interface)
           <div className="flex-1 flex overflow-hidden min-h-0">
             {/* Left Panel - Enhanced with hacker styling and proper scrolling */}
             <div className="w-1/2 border-r border-green-500/30 flex flex-col bg-gray-950/50 backdrop-blur-sm overflow-hidden">
