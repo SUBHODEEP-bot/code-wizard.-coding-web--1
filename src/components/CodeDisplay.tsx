@@ -71,90 +71,161 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
   const extractCodeOnly = (content: string): string => {
     // First try to extract code blocks with triple backticks
     const codeBlockRegex = /```[\w]*\n?([\s\S]*?)```/g;
-    const codeBlocks = content.match(codeBlockRegex);
+    const matches = [...content.matchAll(codeBlockRegex)];
     
-    if (codeBlocks && codeBlocks.length > 0) {
-      return codeBlocks
-        .map(block => block.replace(/```[\w]*\n?/g, '').replace(/```$/g, ''))
+    if (matches.length > 0) {
+      return matches
+        .map(match => match[1].trim())
         .join('\n\n')
         .trim();
     }
     
-    // If no code blocks, try to extract actual code lines (excluding explanatory text)
+    // If no code blocks, extract lines that look like actual code
     const lines = content.split('\n');
     const codeLines = lines.filter(line => {
       const trimmed = line.trim();
       
-      // Skip empty lines and explanatory text
+      // Skip empty lines
       if (!trimmed) return false;
+      
+      // Skip explanatory text patterns
       if (trimmed.startsWith('**')) return false;
       if (trimmed.startsWith('##')) return false;
+      if (trimmed.startsWith('###')) return false;
       if (trimmed.startsWith('Here')) return false;
       if (trimmed.startsWith('This')) return false;
-      if (trimmed.startsWith('The ')) return false;
-      if (trimmed.startsWith('Let')) return false;
-      if (trimmed.startsWith('Note')) return false;
-      if (trimmed.includes('explanation')) return false;
-      if (trimmed.includes('analysis')) return false;
+      if (trimmed.startsWith('The above')) return false;
+      if (trimmed.startsWith('The code')) return false;
+      if (trimmed.startsWith('Let me')) return false;
+      if (trimmed.startsWith('Note:')) return false;
+      if (trimmed.startsWith('Explanation:')) return false;
+      if (trimmed.startsWith('Analysis:')) return false;
+      if (trimmed.includes('explanation:')) return false;
+      if (trimmed.includes('breakdown:')) return false;
       if (trimmed.match(/^\d+\./)) return false; // Numbered lists
+      if (trimmed.startsWith('- ')) return false; // Bullet points
       
-      // Include lines that look like code
-      return trimmed.includes('def ') || 
-             trimmed.includes('function ') || 
-             trimmed.includes('class ') ||
-             trimmed.includes('import ') ||
-             trimmed.includes('const ') ||
-             trimmed.includes('let ') ||
-             trimmed.includes('var ') ||
-             trimmed.includes('{') ||
-             trimmed.includes('}') ||
-             trimmed.includes(';') ||
-             trimmed.includes('=') ||
-             trimmed.includes('if ') ||
-             trimmed.includes('for ') ||
-             trimmed.includes('while ') ||
-             trimmed.includes('return ') ||
-             trimmed.includes('print') ||
-             trimmed.includes('console.log') ||
-             trimmed.startsWith('    ') || // Indented code
-             trimmed.startsWith('\t'); // Tab indented code
+      // Skip common English phrases
+      if (trimmed.startsWith('In this')) return false;
+      if (trimmed.startsWith('We can')) return false;
+      if (trimmed.startsWith('You can')) return false;
+      if (trimmed.startsWith('I\'ve')) return false;
+      if (trimmed.startsWith('I have')) return false;
+      if (trimmed.startsWith('To fix')) return false;
+      if (trimmed.startsWith('To improve')) return false;
+      if (trimmed.startsWith('Issues found:')) return false;
+      if (trimmed.startsWith('Fixes applied:')) return false;
+      if (trimmed.startsWith('Optimizations:')) return false;
+      if (trimmed.startsWith('Changes made:')) return false;
+      
+      // Include lines that look like actual code
+      return (
+        // Common code patterns
+        trimmed.includes('def ') ||
+        trimmed.includes('function ') ||
+        trimmed.includes('class ') ||
+        trimmed.includes('import ') ||
+        trimmed.includes('from ') ||
+        trimmed.includes('const ') ||
+        trimmed.includes('let ') ||
+        trimmed.includes('var ') ||
+        trimmed.includes('if ') ||
+        trimmed.includes('for ') ||
+        trimmed.includes('while ') ||
+        trimmed.includes('return ') ||
+        trimmed.includes('print(') ||
+        trimmed.includes('console.log') ||
+        // Structural indicators
+        trimmed.includes('{') ||
+        trimmed.includes('}') ||
+        trimmed.includes(';') ||
+        trimmed.includes('=') ||
+        trimmed.includes('+=') ||
+        trimmed.includes('->') ||
+        trimmed.includes('=>') ||
+        // Indentation indicates code blocks
+        trimmed.startsWith('    ') || // 4 spaces
+        trimmed.startsWith('\t') || // Tab
+        // HTML/JSX tags
+        trimmed.includes('<') && trimmed.includes('>') ||
+        // Python specific
+        trimmed.includes(':') && (line.includes('def ') || line.includes('class ') || line.includes('if ') || line.includes('for ') || line.includes('while ')) ||
+        // Assignment or operations
+        (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('!='))
+      );
     });
     
-    return codeLines.length > 0 ? codeLines.join('\n') : content;
+    return codeLines.length > 0 ? codeLines.join('\n').trim() : '';
   };
 
   const extractExplanation = (content: string): string => {
-    // Extract explanations and analysis text
+    // Extract all explanatory content and non-code text
     const lines = content.split('\n');
     const explanationLines = lines.filter(line => {
       const trimmed = line.trim();
       
-      if (!trimmed) return false;
+      if (!trimmed) return true; // Keep empty lines for formatting
       
-      // Include explanatory text
-      return trimmed.startsWith('**') || 
-             trimmed.startsWith('##') || 
-             trimmed.startsWith('Here') ||
-             trimmed.startsWith('This') ||
-             trimmed.startsWith('The ') ||
-             trimmed.startsWith('Let') ||
-             trimmed.startsWith('Note') ||
-             trimmed.includes('explanation') ||
-             trimmed.includes('analysis') ||
-             trimmed.includes('breakdown') ||
-             trimmed.match(/^\d+\./) || // Numbered lists
-             (!trimmed.includes('def ') && 
-              !trimmed.includes('function ') && 
-              !trimmed.includes('class ') &&
-              !trimmed.includes('import ') &&
-              !trimmed.includes('const ') &&
-              !trimmed.includes('let ') &&
-              !trimmed.includes('{') &&
-              !trimmed.includes('}') &&
-              !trimmed.includes(';') &&
-              !trimmed.startsWith('    ') &&
-              !trimmed.startsWith('\t') &&
-              trimmed.length > 20);
+      // Include explanatory text patterns
+      if (trimmed.startsWith('**')) return true;
+      if (trimmed.startsWith('##')) return true;
+      if (trimmed.startsWith('###')) return true;
+      if (trimmed.startsWith('Here')) return true;
+      if (trimmed.startsWith('This')) return true;
+      if (trimmed.startsWith('The above')) return true;
+      if (trimmed.startsWith('The code')) return true;
+      if (trimmed.startsWith('Let me')) return true;
+      if (trimmed.startsWith('Note:')) return true;
+      if (trimmed.startsWith('Explanation:')) return true;
+      if (trimmed.startsWith('Analysis:')) return true;
+      if (trimmed.includes('explanation:')) return true;
+      if (trimmed.includes('breakdown:')) return true;
+      if (trimmed.match(/^\d+\./)) return true; // Numbered lists
+      if (trimmed.startsWith('- ')) return true; // Bullet points
+      
+      // Include common English phrases
+      if (trimmed.startsWith('In this')) return true;
+      if (trimmed.startsWith('We can')) return true;
+      if (trimmed.startsWith('You can')) return true;
+      if (trimmed.startsWith('I\'ve')) return true;
+      if (trimmed.startsWith('I have')) return true;
+      if (trimmed.startsWith('To fix')) return true;
+      if (trimmed.startsWith('To improve')) return true;
+      if (trimmed.startsWith('Issues found:')) return true;
+      if (trimmed.startsWith('Fixes applied:')) return true;
+      if (trimmed.startsWith('Optimizations:')) return true;
+      if (trimmed.startsWith('Changes made:')) return true;
+      
+      // Exclude code patterns (opposite of extractCodeOnly logic)
+      if (
+        trimmed.includes('def ') ||
+        trimmed.includes('function ') ||
+        trimmed.includes('class ') ||
+        trimmed.includes('import ') ||
+        trimmed.includes('from ') ||
+        trimmed.includes('const ') ||
+        trimmed.includes('let ') ||
+        trimmed.includes('var ') ||
+        trimmed.includes('if ') ||
+        trimmed.includes('for ') ||
+        trimmed.includes('while ') ||
+        trimmed.includes('return ') ||
+        trimmed.includes('print(') ||
+        trimmed.includes('console.log') ||
+        trimmed.includes('{') ||
+        trimmed.includes('}') ||
+        trimmed.includes(';') ||
+        trimmed.startsWith('    ') ||
+        trimmed.startsWith('\t') ||
+        (trimmed.includes('<') && trimmed.includes('>')) ||
+        (trimmed.includes(':') && (line.includes('def ') || line.includes('class ') || line.includes('if ') || line.includes('for ') || line.includes('while '))) ||
+        (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('!=') && !trimmed.includes('explanation') && !trimmed.includes('This'))
+      ) {
+        return false;
+      }
+      
+      // Include descriptive text that's not code
+      return trimmed.length > 10 && !trimmed.includes('{') && !trimmed.includes('}');
     });
     
     const explanation = explanationLines.join('\n').trim();
@@ -295,9 +366,16 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
 
         <TabsContent value="code" className="flex-1 m-0 overflow-hidden">
           <div className="h-full bg-black/50 p-4 overflow-auto custom-scrollbar backdrop-blur-sm">
-            <pre className="text-sm text-green-300 font-mono whitespace-pre-wrap leading-relaxed">
-              <code>{cleanCode}</code>
-            </pre>
+            {cleanCode ? (
+              <pre className="text-sm text-green-300 font-mono whitespace-pre-wrap leading-relaxed">
+                <code>{cleanCode}</code>
+              </pre>
+            ) : (
+              <div className="text-center text-gray-400 font-mono mt-8">
+                <p>No source code detected in the response.</p>
+                <p className="text-xs mt-2">Check the ANALYSIS tab for explanations and details.</p>
+              </div>
+            )}
           </div>
         </TabsContent>
 
@@ -313,11 +391,11 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
                   </div>
                   <div>
                     <span className="text-blue-400">LINES:</span>
-                    <span className="text-white ml-2">{cleanCode.split('\n').length}</span>
+                    <span className="text-white ml-2">{cleanCode ? cleanCode.split('\n').length : 0}</span>
                   </div>
                   <div>
                     <span className="text-blue-400">CHARACTERS:</span>
-                    <span className="text-white ml-2">{cleanCode.length}</span>
+                    <span className="text-white ml-2">{cleanCode ? cleanCode.length : 0}</span>
                   </div>
                   <div>
                     <span className="text-blue-400">FILE_EXT:</span>
@@ -329,7 +407,7 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
                   </div>
                   <div>
                     <span className="text-blue-400">WORDS:</span>
-                    <span className="text-white ml-2">{cleanCode.split(/\s+/).length}</span>
+                    <span className="text-white ml-2">{cleanCode ? cleanCode.split(/\s+/).filter(w => w.length > 0).length : 0}</span>
                   </div>
                 </div>
               </div>
