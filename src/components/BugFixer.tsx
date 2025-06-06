@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -56,7 +57,8 @@ Please:
 Provide clean, working code with explanations.`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'bug-fixing', 'OpenAI');
+      // Use DeepSeek for best code fixing
+      const result = await aiService.processPrompt(prompt, 'bug-fixing', 'DeepSeek');
       setFixedCode(result);
       toast({
         title: "Bugs Fixed",
@@ -90,7 +92,7 @@ Provide clean, working code with explanations.`;
           </div>
           <Badge className="bg-gradient-to-r from-red-600 to-pink-600 text-white border-0 font-mono">
             <Target className="h-3 w-3 mr-1" />
-            OpenAI GPT-4
+            DeepSeek AI
           </Badge>
         </div>
 

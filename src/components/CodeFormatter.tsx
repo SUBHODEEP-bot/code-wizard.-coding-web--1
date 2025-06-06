@@ -51,7 +51,8 @@ Please:
 Return the formatted code with explanations of changes.`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'style-formatter', 'Gemini');
+      // Use DeepSeek for best code formatting
+      const result = await aiService.processPrompt(prompt, 'style-formatter', 'DeepSeek');
       setFormattedCode(result);
       toast({
         title: "Code Formatted",
@@ -85,7 +86,7 @@ Return the formatted code with explanations of changes.`;
           </div>
           <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 font-mono">
             <Wand2 className="h-3 w-3 mr-1" />
-            Gemini AI
+            DeepSeek AI
           </Badge>
         </div>
 

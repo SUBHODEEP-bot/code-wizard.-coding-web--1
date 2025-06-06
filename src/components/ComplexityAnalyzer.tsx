@@ -78,6 +78,7 @@ Please analyze and provide:
 Provide clear explanations, visual representations where helpful, and actionable recommendations.`;
 
     try {
+      // Use Gemini for comprehensive complexity analysis
       const result = await aiService.processPrompt(prompt, 'complexity-analyzer', 'Gemini');
       setComplexityReport(result);
       toast({

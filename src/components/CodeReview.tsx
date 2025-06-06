@@ -60,7 +60,8 @@ Please provide:
 Focus area: ${reviewFocus || 'comprehensive review'}`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'code-review', 'Both');
+      // Use OpenAI for best code reviews and explanations
+      const result = await aiService.processPrompt(prompt, 'code-review', 'OpenAI');
       setReviewResult(result);
       toast({
         title: "Review Complete",
@@ -94,7 +95,7 @@ Focus area: ${reviewFocus || 'comprehensive review'}`;
           </div>
           <Badge className="bg-gradient-to-r from-orange-600 to-yellow-600 text-white border-0 font-mono">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Multi-AI
+            OpenAI GPT-4
           </Badge>
         </div>
 

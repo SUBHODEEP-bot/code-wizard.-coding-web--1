@@ -46,6 +46,7 @@ Please provide:
 Make it comprehensive but easy to understand.`;
 
     try {
+      // Use OpenAI for best error explanations
       const result = await aiService.processPrompt(prompt, 'error-explainer', 'OpenAI');
       setExplanation(result);
       toast({

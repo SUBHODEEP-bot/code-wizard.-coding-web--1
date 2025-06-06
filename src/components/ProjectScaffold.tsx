@@ -53,7 +53,8 @@ Please provide:
 Make it production-ready with proper structure and best practices.`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'scaffold-generator', 'Gemini');
+      // Use DeepSeek for best project scaffolding
+      const result = await aiService.processPrompt(prompt, 'scaffold-generator', 'DeepSeek');
       setScaffoldCode(result);
       toast({
         title: "Scaffold Generated",
@@ -86,7 +87,7 @@ Make it production-ready with proper structure and best practices.`;
           </div>
           <Badge className="bg-gradient-to-r from-green-600 to-blue-600 text-white border-0 font-mono">
             <Folder className="h-3 w-3 mr-1" />
-            Gemini AI
+            DeepSeek AI
           </Badge>
         </div>
 

@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -53,6 +54,7 @@ Please provide:
 Make the explanation clear and educational.`;
 
     try {
+      // Use OpenAI for best explanations
       const result = await aiService.processPrompt(prompt, 'code-explanation', 'OpenAI');
       setExplanation(result);
       toast({
@@ -87,7 +89,7 @@ Make the explanation clear and educational.`;
           </div>
           <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white border-0 font-mono">
             <Brain className="h-3 w-3 mr-1" />
-            OpenAI GPT-4
+            Multi-AI (Optimized)
           </Badge>
         </div>
 
