@@ -58,7 +58,7 @@ Please:
 Focus on: ${optimizationType || 'overall optimization'}`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'code-optimization', 'DeepSeek');
+      const result = await aiService.processPrompt(prompt, 'code-optimization', 'Gemini');
       setOptimizedCode(result);
       toast({
         title: "Code Optimized",
@@ -92,7 +92,7 @@ Focus on: ${optimizationType || 'overall optimization'}`;
           </div>
           <Badge className="bg-gradient-to-r from-green-600 to-teal-600 text-white border-0 font-mono">
             <Gauge className="h-3 w-3 mr-1" />
-            DeepSeek AI
+            Gemini AI
           </Badge>
         </div>
 

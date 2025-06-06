@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -77,7 +78,7 @@ Please analyze and provide:
 Provide clear explanations, visual representations where helpful, and actionable recommendations.`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'complexity-analyzer', 'DeepSeek');
+      const result = await aiService.processPrompt(prompt, 'complexity-analyzer', 'Gemini');
       setComplexityReport(result);
       toast({
         title: "Analysis Complete",
@@ -111,7 +112,7 @@ Provide clear explanations, visual representations where helpful, and actionable
           </div>
           <Badge className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0 font-mono">
             <Activity className="h-3 w-3 mr-1" />
-            DeepSeek AI
+            Gemini AI
           </Badge>
         </div>
 
