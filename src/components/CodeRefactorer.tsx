@@ -59,7 +59,7 @@ Please:
 Focus on: ${refactorType || 'general code quality improvements'}`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'refactoring', 'Claude');
+      const result = await aiService.processPrompt(prompt, 'refactoring', 'Gemini');
       setRefactoredCode(result);
       toast({
         title: "Code Refactored",
@@ -93,7 +93,7 @@ Focus on: ${refactorType || 'general code quality improvements'}`;
           </div>
           <Badge className="bg-gradient-to-r from-purple-600 to-violet-600 text-white border-0 font-mono">
             <Wrench className="h-3 w-3 mr-1" />
-            Claude AI
+            Gemini AI
           </Badge>
         </div>
 
