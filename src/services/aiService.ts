@@ -24,10 +24,11 @@ class AIService {
 
   async callOpenAI(prompt: string, featureContext: string): Promise<string> {
     try {
+      console.log('Calling OpenAI API for:', featureContext);
       const messages: OpenAIMessage[] = [
         {
           role: 'system',
-          content: `You are an expert coding assistant specialized in ${featureContext}. Provide accurate, well-structured code solutions with proper explanations.`
+          content: `You are an expert coding assistant specialized in ${featureContext}. Provide accurate, well-structured explanations and analysis with clear insights.`
         },
         {
           role: 'user',
@@ -42,18 +43,21 @@ class AIService {
           'Authorization': `Bearer ${this.openaiApiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-4',
           messages: messages,
-          max_tokens: 2000,
+          max_tokens: 3000,
           temperature: 0.7
         })
       });
 
       if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('OpenAI API error:', response.status, errorData);
+        throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
+      console.log('OpenAI response received successfully');
       return data.choices[0].message.content;
     } catch (error) {
       console.error('OpenAI API error:', error);
@@ -63,6 +67,7 @@ class AIService {
 
   async callGemini(prompt: string, featureContext: string): Promise<string> {
     try {
+      console.log('Calling Gemini API for:', featureContext);
       const requestBody: GeminiRequest = {
         contents: [
           {
@@ -84,10 +89,13 @@ class AIService {
       });
 
       if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Gemini API error:', response.status, errorData);
+        throw new Error(`Gemini API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
+      console.log('Gemini response received successfully');
       return data.candidates[0].content.parts[0].text;
     } catch (error) {
       console.error('Gemini API error:', error);
@@ -97,10 +105,11 @@ class AIService {
 
   async callDeepSeek(prompt: string, featureContext: string): Promise<string> {
     try {
+      console.log('Calling DeepSeek API for:', featureContext);
       const messages: OpenAIMessage[] = [
         {
           role: 'system',
-          content: `You are an expert coding assistant specialized in ${featureContext}. Provide accurate, well-structured code solutions with proper explanations.`
+          content: `You are an expert coding assistant specialized in ${featureContext}. Provide accurate, well-structured code solutions with proper explanations and optimizations.`
         },
         {
           role: 'user',
@@ -111,7 +120,7 @@ class AIService {
       const requestBody: DeepSeekRequest = {
         model: 'deepseek-coder',
         messages: messages,
-        max_tokens: 2000,
+        max_tokens: 3000,
         temperature: 0.7
       };
 
@@ -125,10 +134,13 @@ class AIService {
       });
 
       if (!response.ok) {
-        throw new Error(`DeepSeek API error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('DeepSeek API error:', response.status, errorData);
+        throw new Error(`DeepSeek API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
+      console.log('DeepSeek response received successfully');
       return data.choices[0].message.content;
     } catch (error) {
       console.error('DeepSeek API error:', error);
@@ -137,36 +149,44 @@ class AIService {
   }
 
   // Smart provider selection based on task type
-  getOptimalProvider(featureId: string, taskType: 'code' | 'explanation'): 'OpenAI' | 'Gemini' | 'DeepSeek' {
-    // For code generation tasks, DeepSeek and Gemini are best
-    if (taskType === 'code') {
-      const codeFeatures = ['prompt-to-code', 'refactoring', 'code-optimization', 'bug-fixing', 'style-formatter'];
-      if (codeFeatures.includes(featureId)) {
-        return 'DeepSeek'; // Best for code generation
-      }
-      return 'Gemini'; // Good alternative for code
-    }
+  getOptimalProvider(featureId: string): 'OpenAI' | 'Gemini' | 'DeepSeek' {
+    // For code generation, optimization, and refactoring - DeepSeek is best
+    const codeFeatures = [
+      'prompt-to-code', 'refactoring', 'code-optimization', 'bug-fixing', 
+      'style-formatter', 'scaffold-generator', 'translator', 'test-generator'
+    ];
     
-    // For explanation tasks, OpenAI is best
-    if (taskType === 'explanation') {
-      const explanationFeatures = ['code-explanation', 'error-explainer', 'code-review', 'complexity-analyzer'];
-      if (explanationFeatures.includes(featureId)) {
-        return 'OpenAI'; // Best for explanations
-      }
+    // For explanations and analysis - OpenAI is best
+    const explanationFeatures = [
+      'code-explanation', 'error-explainer', 'code-review', 'code-reviewer'
+    ];
+    
+    // For complex analysis and suggestions - Gemini is best
+    const analysisFeatures = [
+      'complexity-analyzer', 'library-suggester', 'security-scanner'
+    ];
+
+    if (codeFeatures.includes(featureId)) {
+      return 'DeepSeek';
+    } else if (explanationFeatures.includes(featureId)) {
+      return 'OpenAI';
+    } else if (analysisFeatures.includes(featureId)) {
+      return 'Gemini';
     }
 
-    // Default fallback
+    // Default to DeepSeek for code-related tasks
     return 'DeepSeek';
   }
 
   async processPrompt(prompt: string, featureId: string, apiProvider: 'OpenAI' | 'Gemini' | 'DeepSeek' | 'Auto' | 'Both'): Promise<string> {
     const featureContext = this.getFeatureContext(featureId);
+    console.log('Processing prompt for feature:', featureId, 'with provider:', apiProvider);
 
     try {
       if (apiProvider === 'Auto') {
-        // Auto-select best provider based on task
-        const taskType = this.determineTaskType(prompt, featureId);
-        const optimalProvider = this.getOptimalProvider(featureId, taskType);
+        // Auto-select best provider based on feature
+        const optimalProvider = this.getOptimalProvider(featureId);
+        console.log('Auto-selected provider:', optimalProvider);
         apiProvider = optimalProvider;
       }
 
@@ -177,40 +197,41 @@ class AIService {
       } else if (apiProvider === 'DeepSeek') {
         return await this.callDeepSeek(prompt, featureContext);
       } else if (apiProvider === 'Both') {
-        // Try DeepSeek first (best for code), fallback to Gemini, then OpenAI
+        // Try optimal provider first, then fallback to others
+        const optimalProvider = this.getOptimalProvider(featureId);
         try {
-          return await this.callDeepSeek(prompt, featureContext);
-        } catch (error) {
-          console.log('DeepSeek failed, trying Gemini...');
-          try {
-            return await this.callGemini(prompt, featureContext);
-          } catch (error) {
-            console.log('Gemini failed, trying OpenAI...');
+          if (optimalProvider === 'DeepSeek') {
+            return await this.callDeepSeek(prompt, featureContext);
+          } else if (optimalProvider === 'OpenAI') {
             return await this.callOpenAI(prompt, featureContext);
+          } else {
+            return await this.callGemini(prompt, featureContext);
+          }
+        } catch (error) {
+          console.log(`${optimalProvider} failed, trying fallback...`);
+          // Try other providers as fallback
+          try {
+            if (optimalProvider !== 'DeepSeek') {
+              return await this.callDeepSeek(prompt, featureContext);
+            } else {
+              return await this.callGemini(prompt, featureContext);
+            }
+          } catch (secondError) {
+            console.log('Second provider failed, trying final fallback...');
+            if (optimalProvider !== 'OpenAI') {
+              return await this.callOpenAI(prompt, featureContext);
+            } else {
+              throw error; // Re-throw original error
+            }
           }
         }
       }
     } catch (error) {
+      console.error('Error in processPrompt:', error);
       throw error;
     }
 
     throw new Error('Invalid API provider specified');
-  }
-
-  private determineTaskType(prompt: string, featureId: string): 'code' | 'explanation' {
-    const explanationKeywords = ['explain', 'understand', 'what does', 'how does', 'analyze', 'review'];
-    const codeKeywords = ['generate', 'create', 'build', 'fix', 'optimize', 'refactor', 'format'];
-    
-    const lowerPrompt = prompt.toLowerCase();
-    
-    const hasExplanationKeywords = explanationKeywords.some(keyword => lowerPrompt.includes(keyword));
-    const hasCodeKeywords = codeKeywords.some(keyword => lowerPrompt.includes(keyword));
-    
-    if (hasExplanationKeywords && !hasCodeKeywords) {
-      return 'explanation';
-    }
-    
-    return 'code'; // Default to code for most programming tasks
   }
 
   private getFeatureContext(featureId: string): string {
@@ -229,6 +250,9 @@ class AIService {
       'test-generator': 'unit test generation',
       'complexity-analyzer': 'algorithm complexity analysis',
       'code-reviewer': 'code review and quality assessment',
+      'code-review': 'code review and quality assessment',
+      'bug-fixing': 'bug detection and fixing',
+      'code-optimization': 'performance optimization',
       'voice-assistant': 'voice-controlled coding',
       'code-summarizer': 'code summarization',
       'multilingual-comments': 'multilingual code documentation',

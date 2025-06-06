@@ -27,7 +27,9 @@ export const ErrorExplainer = () => {
       return;
     }
 
+    console.log('Starting error analysis with OpenAI...');
     setIsAnalyzing(true);
+    
     const prompt = `Analyze and explain this error in detail:
 
 Error Message: ${errorMessage}

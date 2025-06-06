@@ -28,7 +28,7 @@ export interface Feature {
   description: string;
   icon: any;
   category: 'core' | 'advanced' | 'interactive';
-  apiProvider: 'Gemini' | 'OpenAI' | 'Both';
+  apiProvider: 'Gemini' | 'OpenAI' | 'DeepSeek' | 'Auto' | 'Both';
   examplePrompt: string;
   tips?: string;
 }
@@ -41,7 +41,7 @@ export const features: Feature[] = [
     description: 'Generate code from natural language descriptions',
     icon: Code,
     category: 'core',
-    apiProvider: 'Both',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Write a Python function to check if a number is prime.',
     tips: 'Be specific about the programming language and requirements'
   },
@@ -51,7 +51,7 @@ export const features: Feature[] = [
     description: 'Get detailed explanations of how code works',
     icon: FileText,
     category: 'core',
-    apiProvider: 'Gemini',
+    apiProvider: 'OpenAI',
     examplePrompt: 'Explain how this JavaScript function calculates the Fibonacci sequence.',
     tips: 'Paste your code and ask for specific aspects you want explained'
   },
@@ -61,7 +61,7 @@ export const features: Feature[] = [
     description: 'Find and fix bugs in your code',
     icon: Bug,
     category: 'core',
-    apiProvider: 'Both',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Find bugs in this C++ code and suggest corrections.',
     tips: 'Include error messages and expected vs actual behavior'
   },
@@ -71,7 +71,7 @@ export const features: Feature[] = [
     description: 'Improve code structure and performance',
     icon: RefreshCw,
     category: 'core',
-    apiProvider: 'Gemini',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Refactor this bubble sort algorithm for better performance and readability.',
     tips: 'Specify what aspects you want to improve (performance, readability, maintainability)'
   },
@@ -81,7 +81,7 @@ export const features: Feature[] = [
     description: 'Convert code between programming languages',
     icon: Languages,
     category: 'core',
-    apiProvider: 'Both',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Translate this Java code to equivalent Python code.',
     tips: 'Mention any specific libraries or patterns to use in the target language'
   },
@@ -103,7 +103,7 @@ export const features: Feature[] = [
     description: 'Generate complete project structures',
     icon: Layers,
     category: 'advanced',
-    apiProvider: 'Gemini',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Generate a basic React app with a user login system and routing.',
     tips: 'Specify the tech stack and key features you need'
   },
@@ -123,7 +123,7 @@ export const features: Feature[] = [
     description: 'Get recommendations for libraries and frameworks',
     icon: Lightbulb,
     category: 'advanced',
-    apiProvider: 'Both',
+    apiProvider: 'Gemini',
     examplePrompt: 'Which JavaScript libraries are best for data visualization?',
     tips: 'Mention your specific requirements and constraints'
   },
@@ -133,7 +133,7 @@ export const features: Feature[] = [
     description: 'Format code according to style guides',
     icon: Palette,
     category: 'advanced',
-    apiProvider: 'Gemini',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Format this JavaScript code to follow the Airbnb style guide.',
     tips: 'Specify which style guide or formatting rules to follow'
   },
@@ -143,7 +143,7 @@ export const features: Feature[] = [
     description: 'Detect security vulnerabilities in code',
     icon: Shield,
     category: 'advanced',
-    apiProvider: 'Both',
+    apiProvider: 'Gemini',
     examplePrompt: 'Check this PHP code for possible SQL injection vulnerabilities.',
     tips: 'Include context about how the code is used in your application'
   },
@@ -153,7 +153,7 @@ export const features: Feature[] = [
     description: 'Generate comprehensive unit tests',
     icon: TestTube,
     category: 'advanced',
-    apiProvider: 'Gemini',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Generate unit tests for this Python function using unittest.',
     tips: 'Specify the testing framework and coverage requirements'
   },
@@ -173,7 +173,7 @@ export const features: Feature[] = [
     description: 'Get detailed code reviews and suggestions',
     icon: Search,
     category: 'advanced',
-    apiProvider: 'Both',
+    apiProvider: 'OpenAI',
     examplePrompt: 'Review this pull request and suggest improvements for code quality.',
     tips: 'Provide context about the project and what the code is supposed to do'
   },
@@ -195,7 +195,7 @@ export const features: Feature[] = [
     description: 'Get concise summaries of code functionality',
     icon: FileCode,
     category: 'interactive',
-    apiProvider: 'Gemini',
+    apiProvider: 'OpenAI',
     examplePrompt: 'Summarize what this block of C# code does in 3 sentences.',
     tips: 'Specify the level of detail you want in the summary'
   },
@@ -205,7 +205,7 @@ export const features: Feature[] = [
     description: 'Add comments in different languages',
     icon: MessageSquare,
     category: 'interactive',
-    apiProvider: 'Both',
+    apiProvider: 'OpenAI',
     examplePrompt: 'Add detailed comments to this Java code in Bengali.',
     tips: 'Specify the target language and comment style preferences'
   },
@@ -215,7 +215,7 @@ export const features: Feature[] = [
     description: 'Optimize code for better performance',
     icon: Zap,
     category: 'interactive',
-    apiProvider: 'Gemini',
+    apiProvider: 'DeepSeek',
     examplePrompt: 'Optimize this nested loop to reduce time complexity.',
     tips: 'Mention specific performance bottlenecks you want to address'
   },
