@@ -16,6 +16,7 @@ import { CodeExplainer } from '@/components/CodeExplainer';
 import { BugFixer } from '@/components/BugFixer';
 import { CodeOptimizer } from '@/components/CodeOptimizer';
 import { CodeRefactorer } from '@/components/CodeRefactorer';
+import { CodeReview } from '@/components/CodeReview';
 
 // Advanced Protocol Components
 import { ProjectScaffold } from '@/components/ProjectScaffold';
@@ -39,8 +40,8 @@ const Index = () => {
     let audioData = '';
     
     if (['prompt-to-code', 'code-explanation', 'code-review', 'bug-fixing', 'code-optimization', 'refactoring'].includes(featureId)) {
-      // Core modules - deep tech sound
-      audioData = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBw==';
+      // Core modules - mechanical keyboard sound
+      audioData = 'data:audio/wav;base64,UklGRk4EAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YSoEAACBhYqFbF1hdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB';
     } else if (['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(featureId)) {
       // Advanced protocols - sophisticated beep
       audioData = 'data:audio/wav;base64,UklGRh4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVIBAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB1K47O2cRAcWVLjpzrJuHQU+ltXuu3UsB+jD7e2LTAYYUrzop7JUEAZel+rxtmAcBzWb0PPEhzEIHWO86qRYBQNQstX40YBAAhVUuev4vF0dAhN92OvQwH0dBH2o3vmjRwjrxeHWo2gSETm//fyTRwHrxeH1xGAVFWK36c7XfTUIHW26xuCNRxJAmtP004s3BydOjO7j23UpCCWG0OzHgkYOOILM8NuJNwJOq8OppGcR';
@@ -51,6 +52,7 @@ const Index = () => {
     
     if (audioData) {
       const audio = new Audio(audioData);
+      audio.volume = 0.3;
       audio.play().catch(() => {});
     }
   };
@@ -117,12 +119,14 @@ const Index = () => {
   // Check if current feature is language translator or advanced protocol or core module
   const isLanguageTranslator = selectedFeature === 'translator';
   const isAdvancedProtocol = ['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(selectedFeature);
-  const isCoreModule = ['code-explanation', 'bug-fixing', 'code-optimization', 'refactoring'].includes(selectedFeature);
+  const isCoreModule = ['code-explanation', 'code-review', 'bug-fixing', 'code-optimization', 'refactoring'].includes(selectedFeature);
 
   const renderCoreModule = () => {
     switch (selectedFeature) {
       case 'code-explanation':
         return <CodeExplainer />;
+      case 'code-review':
+        return <CodeReview />;
       case 'bug-fixing':
         return <BugFixer />;
       case 'code-optimization':

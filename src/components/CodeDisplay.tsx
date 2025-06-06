@@ -17,7 +17,8 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(code);
+      const cleanCode = extractCodeOnly(code);
+      await navigator.clipboard.writeText(cleanCode);
       toast({
         title: "Copied!",
         description: "Code copied to clipboard successfully",
@@ -32,7 +33,8 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
   };
 
   const downloadCode = () => {
-    const blob = new Blob([code], { type: 'text/plain' });
+    const cleanCode = extractCodeOnly(code);
+    const blob = new Blob([cleanCode], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -67,60 +69,96 @@ export const CodeDisplay = ({ code, isProcessing, error, selectedLanguage, selec
   };
 
   const extractCodeOnly = (content: string): string => {
-    // Remove explanations and keep only code blocks
-    const codeBlockRegex = /```[\s\S]*?```/g;
+    // First try to extract code blocks with triple backticks
+    const codeBlockRegex = /```[\w]*\n?([\s\S]*?)```/g;
     const codeBlocks = content.match(codeBlockRegex);
     
-    if (codeBlocks) {
+    if (codeBlocks && codeBlocks.length > 0) {
       return codeBlocks
-        .map(block => block.replace(/```\w*\n?/g, '').replace(/```/g, ''))
-        .join('\n\n');
+        .map(block => block.replace(/```[\w]*\n?/g, '').replace(/```$/g, ''))
+        .join('\n\n')
+        .trim();
     }
     
-    // If no code blocks found, try to extract code-like content
+    // If no code blocks, try to extract actual code lines (excluding explanatory text)
     const lines = content.split('\n');
     const codeLines = lines.filter(line => {
       const trimmed = line.trim();
-      return trimmed && 
-             !trimmed.startsWith('**') && 
-             !trimmed.startsWith('##') && 
-             !trimmed.startsWith('Here') &&
-             !trimmed.startsWith('This') &&
-             !trimmed.startsWith('The') &&
-             !trimmed.includes('explanation') &&
-             !trimmed.includes('analysis');
+      
+      // Skip empty lines and explanatory text
+      if (!trimmed) return false;
+      if (trimmed.startsWith('**')) return false;
+      if (trimmed.startsWith('##')) return false;
+      if (trimmed.startsWith('Here')) return false;
+      if (trimmed.startsWith('This')) return false;
+      if (trimmed.startsWith('The ')) return false;
+      if (trimmed.startsWith('Let')) return false;
+      if (trimmed.startsWith('Note')) return false;
+      if (trimmed.includes('explanation')) return false;
+      if (trimmed.includes('analysis')) return false;
+      if (trimmed.match(/^\d+\./)) return false; // Numbered lists
+      
+      // Include lines that look like code
+      return trimmed.includes('def ') || 
+             trimmed.includes('function ') || 
+             trimmed.includes('class ') ||
+             trimmed.includes('import ') ||
+             trimmed.includes('const ') ||
+             trimmed.includes('let ') ||
+             trimmed.includes('var ') ||
+             trimmed.includes('{') ||
+             trimmed.includes('}') ||
+             trimmed.includes(';') ||
+             trimmed.includes('=') ||
+             trimmed.includes('if ') ||
+             trimmed.includes('for ') ||
+             trimmed.includes('while ') ||
+             trimmed.includes('return ') ||
+             trimmed.includes('print') ||
+             trimmed.includes('console.log') ||
+             trimmed.startsWith('    ') || // Indented code
+             trimmed.startsWith('\t'); // Tab indented code
     });
     
     return codeLines.length > 0 ? codeLines.join('\n') : content;
   };
 
   const extractExplanation = (content: string): string => {
-    // Extract explanations and analysis
+    // Extract explanations and analysis text
     const lines = content.split('\n');
     const explanationLines = lines.filter(line => {
       const trimmed = line.trim();
-      return trimmed && 
-             (trimmed.startsWith('**') || 
-              trimmed.startsWith('##') || 
-              trimmed.startsWith('Here') ||
-              trimmed.startsWith('This') ||
-              trimmed.startsWith('The') ||
-              trimmed.includes('explanation') ||
-              trimmed.includes('analysis') ||
-              trimmed.includes('breakdown') ||
-              (!trimmed.includes('def ') && 
-               !trimmed.includes('function ') && 
-               !trimmed.includes('class ') &&
-               !trimmed.includes('import ') &&
-               !trimmed.includes('const ') &&
-               !trimmed.includes('let ') &&
-               !trimmed.includes('{') &&
-               !trimmed.includes('}') &&
-               !trimmed.includes(';') &&
-               trimmed.length > 20));
+      
+      if (!trimmed) return false;
+      
+      // Include explanatory text
+      return trimmed.startsWith('**') || 
+             trimmed.startsWith('##') || 
+             trimmed.startsWith('Here') ||
+             trimmed.startsWith('This') ||
+             trimmed.startsWith('The ') ||
+             trimmed.startsWith('Let') ||
+             trimmed.startsWith('Note') ||
+             trimmed.includes('explanation') ||
+             trimmed.includes('analysis') ||
+             trimmed.includes('breakdown') ||
+             trimmed.match(/^\d+\./) || // Numbered lists
+             (!trimmed.includes('def ') && 
+              !trimmed.includes('function ') && 
+              !trimmed.includes('class ') &&
+              !trimmed.includes('import ') &&
+              !trimmed.includes('const ') &&
+              !trimmed.includes('let ') &&
+              !trimmed.includes('{') &&
+              !trimmed.includes('}') &&
+              !trimmed.includes(';') &&
+              !trimmed.startsWith('    ') &&
+              !trimmed.startsWith('\t') &&
+              trimmed.length > 20);
     });
     
-    return explanationLines.length > 0 ? explanationLines.join('\n') : 'No detailed explanation available for this code.';
+    const explanation = explanationLines.join('\n').trim();
+    return explanation || 'No detailed explanation available for this code.';
   };
 
   if (isProcessing) {
