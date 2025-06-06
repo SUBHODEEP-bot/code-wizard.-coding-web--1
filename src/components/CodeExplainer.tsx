@@ -53,7 +53,7 @@ Please provide:
 Make the explanation clear and educational.`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'code-explanation', 'OpenAI');
+      const result = await aiService.processPrompt(prompt, 'code-explanation', 'DeepSeek');
       setExplanation(result);
       toast({
         title: "Code Explained",
@@ -87,7 +87,7 @@ Make the explanation clear and educational.`;
           </div>
           <Badge className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white border-0 font-mono">
             <Brain className="h-3 w-3 mr-1" />
-            OpenAI GPT-4
+            DeepSeek AI
           </Badge>
         </div>
 

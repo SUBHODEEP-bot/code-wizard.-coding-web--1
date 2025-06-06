@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -60,7 +59,7 @@ Please provide:
 Focus area: ${reviewFocus || 'comprehensive review'}`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'code-review', 'Both');
+      const result = await aiService.processPrompt(prompt, 'code-review', 'DeepSeek');
       setReviewResult(result);
       toast({
         title: "Review Complete",
@@ -94,7 +93,7 @@ Focus area: ${reviewFocus || 'comprehensive review'}`;
           </div>
           <Badge className="bg-gradient-to-r from-orange-600 to-yellow-600 text-white border-0 font-mono">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Multi-AI
+            DeepSeek AI
           </Badge>
         </div>
 
