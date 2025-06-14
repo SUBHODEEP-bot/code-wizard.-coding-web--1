@@ -1,4 +1,3 @@
-
 import { 
   Code, 
   Search, 
@@ -238,5 +237,15 @@ export const features: Feature[] = [
     apiProvider: 'OpenAI',
     examplePrompt: 'Teach me recursion with simple examples and exercises.',
     tips: 'Specify your current skill level and learning goals'
+  },
+
+  // AI Learner Features
+  {
+    id: 'ai-code-learner',
+    name: 'AI Code Learner',
+    icon: 'BookOpen',
+    category: 'ai-learner',
+    apiProvider: 'Both',
+    description: 'Learn how to code in any programming language using powerful AI.'
   }
 ];

@@ -38,6 +38,9 @@ import { ComplexityOptimizer } from '@/components/ComplexityOptimizer';
 import { PairProgramming } from '@/components/PairProgramming';
 import { InteractiveTutor } from '@/components/InteractiveTutor';
 
+// AI Code Learner Component
+import { AICodeLearner } from '@/components/AICodeLearner';
+
 const Index = () => {
   const navigate = useNavigate();
   const [selectedFeature, setSelectedFeature] = useState('prompt-to-code');
@@ -104,11 +107,12 @@ const Index = () => {
     }
   };
 
-  // Check if current feature is language translator or advanced protocol or core module or neural interface
+  // Check if current feature is language translator or advanced protocol or core module or neural interface or AI Code Learner
   const isLanguageTranslator = selectedFeature === 'translator';
   const isAdvancedProtocol = ['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(selectedFeature);
   const isCoreModule = ['code-explanation', 'code-review', 'bug-fixing', 'code-optimization', 'refactoring'].includes(selectedFeature);
   const isNeuralInterface = ['voice-assistant', 'code-summarizer', 'multilingual-comments', 'complexity-optimizer', 'pair-programming', 'coding-tutor'].includes(selectedFeature);
+  const isAICodeLearner = selectedFeature === 'ai-code-learner';
 
   const renderCoreModule = () => {
     switch (selectedFeature) {
@@ -250,6 +254,10 @@ const Index = () => {
         ) : isNeuralInterface ? (
           <div className="flex-1 overflow-hidden">
             {renderNeuralInterface()}
+          </div>
+        ) : isAICodeLearner ? (
+          <div className="flex-1 overflow-hidden">
+            <AICodeLearner />
           </div>
         ) : (
           

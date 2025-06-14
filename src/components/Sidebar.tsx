@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { ChevronRight, ChevronDown, Terminal, Cpu, Shield } from 'lucide-react';
+import { ChevronRight, ChevronDown, Terminal, Cpu, Shield, BookOpen } from 'lucide-react';
 import { features } from '@/data/features';
 import { ProgrammingLanguage } from './LanguageSelector';
 
@@ -11,7 +10,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ selectedFeature, onFeatureSelect, selectedLanguage }: SidebarProps) => {
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(['core', 'advanced', 'interactive']);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(['core', 'advanced', 'interactive', 'ai-learner']);
 
   const toggleCategory = (category: string) => {
     setExpandedCategories(prev => 
@@ -39,6 +38,12 @@ export const Sidebar = ({ selectedFeature, onFeatureSelect, selectedLanguage }: 
       name: 'NEURAL_INTERFACE',
       icon: Terminal,
       features: features.filter(f => f.category === 'interactive')
+    },
+    {
+      id: 'ai-learner',
+      name: 'AI_CODE_LEARNER',
+      icon: BookOpen,
+      features: features.filter(f => f.category === 'ai-learner')
     }
   ];
 
