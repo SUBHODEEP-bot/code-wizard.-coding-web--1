@@ -1,4 +1,3 @@
-
 interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -78,17 +77,26 @@ Each example should be complete, functional, and clearly separated from others. 
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response from OpenAI' }));
         console.error('OpenAI API error:', response.status, errorData);
-        throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+        throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || errorData.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
-      console.log('OpenAI response received successfully');
-      return data.choices[0].message.content;
+      console.log('OpenAI response received successfully. Data:', JSON.stringify(data, null, 2));
+      
+      if (data.choices && data.choices.length > 0 && data.choices[0].message && typeof data.choices[0].message.content === 'string') {
+        return data.choices[0].message.content;
+      } else {
+        console.error('OpenAI response missing expected content structure:', data);
+        throw new Error('OpenAI response structure was not as expected. Check logs for details.');
+      }
     } catch (error) {
-      console.error('OpenAI API error:', error);
-      throw new Error('Failed to process request with OpenAI');
+      console.error('Error in callOpenAI:', error);
+      if (error instanceof Error) {
+        throw error; // Re-throw if already an Error instance
+      }
+      throw new Error('Failed to process request with OpenAI due to an unexpected error.');
     }
   }
 
@@ -153,17 +161,26 @@ Please help with: ${enhancedPrompt}`
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response from Gemini' }));
         console.error('Gemini API error:', response.status, errorData);
-        throw new Error(`Gemini API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+        throw new Error(`Gemini API error: ${response.status} - ${errorData.error?.message || errorData.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
-      console.log('Gemini response received successfully');
-      return data.candidates[0].content.parts[0].text;
+      console.log('Gemini response received successfully. Data:', JSON.stringify(data, null, 2));
+
+      if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0 && typeof data.candidates[0].content.parts[0].text === 'string') {
+        return data.candidates[0].content.parts[0].text;
+      } else {
+        console.error('Gemini response missing expected content structure:', data);
+        throw new Error('Gemini response structure was not as expected. Check logs for details.');
+      }
     } catch (error) {
-      console.error('Gemini API error:', error);
-      throw new Error('Failed to process request with Gemini');
+      console.error('Error in callGemini:', error);
+      if (error instanceof Error) {
+        throw error; // Re-throw if already an Error instance
+      }
+      throw new Error('Failed to process request with Gemini due to an unexpected error.');
     }
   }
 
@@ -223,6 +240,7 @@ EXAMPLE FORMAT TO FOLLOW:
     return 'Gemini';
   }
 
+  // ... keep existing code (processPrompt method, but ensure its own catch block correctly re-throws or details errors)
   async processPrompt(prompt: string, featureId: string, apiProvider: 'OpenAI' | 'Gemini' | 'Auto' | 'Both'): Promise<string> {
     const featureContext = this.getFeatureContext(featureId);
     console.log('Processing prompt for feature:', featureId, 'with provider:', apiProvider);
@@ -249,7 +267,7 @@ EXAMPLE FORMAT TO FOLLOW:
             return await this.callGemini(prompt, featureContext);
           }
         } catch (error) {
-          console.log(`${optimalProvider} failed, trying fallback...`);
+          console.log(`${optimalProvider} failed, trying fallback...`, error);
           // Try other provider as fallback
           try {
             if (optimalProvider !== 'OpenAI') {
@@ -258,23 +276,26 @@ EXAMPLE FORMAT TO FOLLOW:
               return await this.callGemini(prompt, featureContext);
             }
           } catch (secondError) {
-            throw error; // Re-throw original error
+            console.error('Fallback provider also failed:', secondError);
+            throw error; // Re-throw original error or potentially the secondError if more informative
           }
         }
       }
     } catch (error) {
       console.error('Error in processPrompt:', error);
       
-      // Add more detailed error logging
       if (error instanceof Error) {
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
+        throw error; // Re-throw the original error to be caught by the caller
       }
       
-      throw error;
+      // Fallback for non-Error objects (though less likely with typed throws)
+      throw new Error('An unexpected issue occurred in processPrompt.');
     }
 
-    throw new Error('Invalid API provider specified');
+    // This line should ideally not be reached if logic is correct
+    throw new Error('Invalid API provider specified or unhandled execution path in processPrompt.');
   }
 
   private getFeatureContext(featureId: string): string {
