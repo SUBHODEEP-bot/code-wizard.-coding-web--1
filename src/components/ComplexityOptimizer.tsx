@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,7 +8,6 @@ import { Zap, Target, TrendingUp } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const ComplexityOptimizer = () => {
   const [code, setCode] = useState('');
@@ -15,8 +15,6 @@ export const ComplexityOptimizer = () => {
   const [optimizationType, setOptimizationType] = useState('');
   const [optimizedCode, setOptimizedCode] = useState('');
   const [isOptimizing, setIsOptimizing] = useState(false);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -36,7 +34,6 @@ export const ComplexityOptimizer = () => {
       return;
     }
 
-    playMechanicalSound(); // Play sound when optimizing
     setIsOptimizing(true);
     const prompt = `Optimize this ${language} code for better ${optimizationType.toLowerCase()}:
 
@@ -97,10 +94,7 @@ Focus specifically on improving ${optimizationType.toLowerCase()}.`;
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={(value) => {
-              playMechanicalSound();
-              setLanguage(value);
-            }}>
+            <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
@@ -116,10 +110,7 @@ Focus specifically on improving ${optimizationType.toLowerCase()}.`;
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">OPTIMIZATION_TYPE</label>
-            <Select value={optimizationType} onValueChange={(value) => {
-              playMechanicalSound();
-              setOptimizationType(value);
-            }}>
+            <Select value={optimizationType} onValueChange={setOptimizationType}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select optimization focus..." />
               </SelectTrigger>

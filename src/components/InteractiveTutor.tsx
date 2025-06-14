@@ -8,7 +8,6 @@ import { GraduationCap, BookOpen, Lightbulb, ArrowRight } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const InteractiveTutor = () => {
   const [topic, setTopic] = useState('');
@@ -17,8 +16,6 @@ export const InteractiveTutor = () => {
   const [specificQuestion, setSpecificQuestion] = useState('');
   const [tutorialContent, setTutorialContent] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -45,7 +42,6 @@ export const InteractiveTutor = () => {
       return;
     }
 
-    playMechanicalSound();
     setIsGenerating(true);
     
     const prompt = `Create an interactive coding tutorial for:
@@ -135,10 +131,7 @@ Adapt the complexity and depth to the ${skillLevel} level. Make it engaging, int
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={(value) => {
-              playMechanicalSound();
-              setLanguage(value);
-            }}>
+            <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
@@ -154,10 +147,7 @@ Adapt the complexity and depth to the ${skillLevel} level. Make it engaging, int
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">SKILL_LEVEL</label>
-            <Select value={skillLevel} onValueChange={(value) => {
-              playMechanicalSound();
-              setSkillLevel(value);
-            }}>
+            <Select value={skillLevel} onValueChange={setSkillLevel}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select your skill level..." />
               </SelectTrigger>
@@ -173,10 +163,7 @@ Adapt the complexity and depth to the ${skillLevel} level. Make it engaging, int
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">LEARNING_TOPIC</label>
-            <Select value={topic} onValueChange={(value) => {
-              playMechanicalSound();
-              setTopic(value);
-            }}>
+            <Select value={topic} onValueChange={setTopic}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select topic to learn..." />
               </SelectTrigger>

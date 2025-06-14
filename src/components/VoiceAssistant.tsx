@@ -8,7 +8,6 @@ import { Mic, MicOff, Volume2, VolumeX, MessageSquare, Zap } from 'lucide-react'
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const VoiceAssistant = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -19,8 +18,6 @@ export const VoiceAssistant = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recognitionRef = useRef<any>(null);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -49,7 +46,6 @@ export const VoiceAssistant = () => {
   }, []);
 
   const startRecording = () => {
-    playMechanicalSound();
     if (recognitionRef.current) {
       setIsRecording(true);
       setTranscript('');
@@ -64,7 +60,6 @@ export const VoiceAssistant = () => {
   };
 
   const stopRecording = () => {
-    playMechanicalSound();
     if (recognitionRef.current) {
       setIsRecording(false);
       recognitionRef.current.stop();
@@ -81,7 +76,6 @@ export const VoiceAssistant = () => {
       return;
     }
 
-    playMechanicalSound();
     setIsProcessing(true);
     
     const prompt = `Voice command: "${transcript}"
@@ -123,7 +117,6 @@ Provide a helpful response in ${language} if code is requested, or clear explana
 
   const speakResponse = (text: string) => {
     if ('speechSynthesis' in window) {
-      playMechanicalSound();
       setIsSpeaking(true);
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 0.8;
@@ -139,7 +132,6 @@ Provide a helpful response in ${language} if code is requested, or clear explana
   };
 
   const stopSpeaking = () => {
-    playMechanicalSound();
     if ('speechSynthesis' in window) {
       speechSynthesis.cancel();
       setIsSpeaking(false);
@@ -168,10 +160,7 @@ Provide a helpful response in ${language} if code is requested, or clear explana
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={(value) => {
-              playMechanicalSound();
-              setLanguage(value);
-            }}>
+            <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>

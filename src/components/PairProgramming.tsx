@@ -8,7 +8,6 @@ import { Users, MessageCircle, Code2, Send } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const PairProgramming = () => {
   const [currentCode, setCurrentCode] = useState('');
@@ -17,8 +16,6 @@ export const PairProgramming = () => {
   const [conversation, setConversation] = useState<Array<{role: string, content: string, timestamp: string}>>([]);
   const [aiResponse, setAiResponse] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -33,8 +30,6 @@ export const PairProgramming = () => {
       });
       return;
     }
-
-    playMechanicalSound();
     
     const newMessage = {
       role: 'user',
@@ -96,7 +91,6 @@ Respond in a conversational, collaborative tone.`;
   };
 
   const clearConversation = () => {
-    playMechanicalSound();
     setConversation([]);
     setAiResponse('');
   };
@@ -123,10 +117,7 @@ Respond in a conversational, collaborative tone.`;
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={(value) => {
-              playMechanicalSound();
-              setLanguage(value);
-            }}>
+            <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
