@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,7 +8,6 @@ import { FileCode, Zap, BookOpen } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const CodeSummarizer = () => {
   const [code, setCode] = useState('');
@@ -15,8 +15,6 @@ export const CodeSummarizer = () => {
   const [summaryType, setSummaryType] = useState('');
   const [summary, setSummary] = useState('');
   const [isSummarizing, setIsSummarizing] = useState(false);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -36,7 +34,6 @@ export const CodeSummarizer = () => {
       return;
     }
 
-    playMechanicalSound(); // Play sound when summarizing
     setIsSummarizing(true);
     const prompt = `Create a ${summaryType.toLowerCase()} for this ${language} code:
 
@@ -97,10 +94,7 @@ Make it clear, concise, and professional.`;
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={(value) => {
-              playMechanicalSound();
-              setLanguage(value);
-            }}>
+            <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
@@ -116,10 +110,7 @@ Make it clear, concise, and professional.`;
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">SUMMARY_TYPE</label>
-            <Select value={summaryType} onValueChange={(value) => {
-              playMechanicalSound();
-              setSummaryType(value);
-            }}>
+            <Select value={summaryType} onValueChange={setSummaryType}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select summary type..." />
               </SelectTrigger>

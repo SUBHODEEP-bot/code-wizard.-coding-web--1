@@ -8,7 +8,6 @@ import { RefreshCw, Code, Wrench } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const CodeRefactorer = () => {
   const [code, setCode] = useState('');
@@ -16,8 +15,6 @@ export const CodeRefactorer = () => {
   const [refactorType, setRefactorType] = useState('');
   const [refactoredCode, setRefactoredCode] = useState('');
   const [isRefactoring, setIsRefactoring] = useState(false);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -37,7 +34,6 @@ export const CodeRefactorer = () => {
       return;
     }
 
-    playMechanicalSound(); // Play sound when refactoring
     setIsRefactoring(true);
     const prompt = `Refactor this ${language} code for better ${refactorType || 'readability and maintainability'}:
 
@@ -97,10 +93,7 @@ Focus on: ${refactorType || 'general code quality improvements'}`;
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={(value) => {
-              playMechanicalSound();
-              setLanguage(value);
-            }}>
+            <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
@@ -116,10 +109,7 @@ Focus on: ${refactorType || 'general code quality improvements'}`;
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">REFACTOR_FOCUS</label>
-            <Select value={refactorType} onValueChange={(value) => {
-              playMechanicalSound();
-              setRefactorType(value);
-            }}>
+            <Select value={refactorType} onValueChange={setRefactorType}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select refactoring type (optional)..." />
               </SelectTrigger>

@@ -8,7 +8,6 @@ import { Palette, Code, Wand2 } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const CodeFormatter = () => {
   const [code, setCode] = useState('');
@@ -16,8 +15,6 @@ export const CodeFormatter = () => {
   const [styleGuide, setStyleGuide] = useState('');
   const [formattedCode, setFormattedCode] = useState('');
   const [isFormatting, setIsFormatting] = useState(false);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -37,7 +34,6 @@ export const CodeFormatter = () => {
       return;
     }
 
-    playMechanicalSound(); // Play sound when formatting
     setIsFormatting(true);
     const prompt = `Format this ${language} code according to the ${styleGuide} style guide:
 
@@ -97,10 +93,7 @@ Return the formatted code with explanations of changes.`;
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={(value) => {
-              playMechanicalSound();
-              setLanguage(value);
-            }}>
+            <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
@@ -116,10 +109,7 @@ Return the formatted code with explanations of changes.`;
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">STYLE_GUIDE</label>
-            <Select value={styleGuide} onValueChange={(value) => {
-              playMechanicalSound();
-              setStyleGuide(value);
-            }}>
+            <Select value={styleGuide} onValueChange={setStyleGuide}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select style guide..." />
               </SelectTrigger>

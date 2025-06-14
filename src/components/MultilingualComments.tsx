@@ -8,7 +8,6 @@ import { Globe, Languages, FileText } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const MultilingualComments = () => {
   const [code, setCode] = useState('');
@@ -16,8 +15,6 @@ export const MultilingualComments = () => {
   const [targetLanguage, setTargetLanguage] = useState('');
   const [commentedCode, setCommentedCode] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const { playMechanicalSound } = useSoundEffects();
 
   const programmingLanguages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
@@ -37,7 +34,6 @@ export const MultilingualComments = () => {
       return;
     }
 
-    playMechanicalSound();
     setIsProcessing(true);
     
     const prompt = `Add comprehensive comments to this ${programmingLanguage} code in ${targetLanguage} language:
@@ -98,10 +94,7 @@ Make the comments educational and helpful for developers who speak ${targetLangu
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={programmingLanguage} onValueChange={(value) => {
-              playMechanicalSound();
-              setProgrammingLanguage(value);
-            }}>
+            <Select value={programmingLanguage} onValueChange={setProgrammingLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select programming language..." />
               </SelectTrigger>
@@ -117,10 +110,7 @@ Make the comments educational and helpful for developers who speak ${targetLangu
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">COMMENT_LANGUAGE</label>
-            <Select value={targetLanguage} onValueChange={(value) => {
-              playMechanicalSound();
-              setTargetLanguage(value);
-            }}>
+            <Select value={targetLanguage} onValueChange={setTargetLanguage}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select comment language..." />
               </SelectTrigger>

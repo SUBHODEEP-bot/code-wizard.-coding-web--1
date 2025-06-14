@@ -6,12 +6,10 @@ import { FeatureCard } from '@/components/FeatureCard';
 import { LanguageSelector, programmingLanguages, ProgrammingLanguage } from '@/components/LanguageSelector';
 import { LanguageTranslator } from '@/components/LanguageTranslator';
 import { HackerTerminal } from '@/components/HackerTerminal';
-import { SoundToggle } from '@/components/SoundToggle';
 import { Code, Zap, Shield, Cpu, Network } from 'lucide-react';
 import { features } from '@/data/features';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 // Core Module Components
 import { CodeExplainer } from '@/components/CodeExplainer';
@@ -45,15 +43,11 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Sound effects hook
-  const { isSoundEnabled, toggleSound, playMechanicalSound } = useSoundEffects();
-
   const handlePromptSubmit = async (prompt: string) => {
     const currentFeature = features.find(f => f.id === selectedFeature);
     if (!currentFeature) return;
 
     console.log('Processing prompt:', prompt, 'for feature:', selectedFeature, 'in language:', selectedLanguage.name);
-    playMechanicalSound(); // Play sound when processing starts
     setIsProcessing(true);
     setError(null);
     
@@ -183,10 +177,7 @@ const Index = () => {
 
       <Sidebar 
         selectedFeature={selectedFeature} 
-        onFeatureSelect={(feature) => {
-          playMechanicalSound(); // Play sound on feature selection
-          setSelectedFeature(feature);
-        }}
+        onFeatureSelect={setSelectedFeature}
         selectedLanguage={selectedLanguage}
       />
       
@@ -211,17 +202,10 @@ const Index = () => {
               {!isLanguageTranslator && (
                 <LanguageSelector 
                   selectedLanguage={selectedLanguage}
-                  onLanguageChange={(lang) => {
-                    playMechanicalSound(); // Play sound on language change
-                    setSelectedLanguage(lang);
-                  }}
+                  onLanguageChange={setSelectedLanguage}
                   compact={true}
                 />
               )}
-              <SoundToggle 
-                isSoundEnabled={isSoundEnabled}
-                onToggle={toggleSound}
-              />
               <div className="flex items-center space-x-2 px-3 py-1 bg-gray-900 border border-green-500/30 rounded-lg">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -256,7 +240,7 @@ const Index = () => {
             {renderNeuralInterface()}
           </div>
         ) : (
-          // ... keep existing code (main prompt-to-code interface)
+          
           <div className="flex-1 flex overflow-hidden min-h-0">
             {/* Left Panel - Enhanced with hacker styling and proper scrolling */}
             <div className="w-1/2 border-r border-green-500/30 flex flex-col bg-gray-950/50 backdrop-blur-sm overflow-hidden">
@@ -299,9 +283,6 @@ const Index = () => {
               <span className="text-blue-400">LANG: {selectedLanguage.name.toUpperCase()}</span>
             )}
             <span className="text-purple-400">MODEL: MULTI_NEURAL</span>
-            <span className={`${isSoundEnabled ? 'text-green-400' : 'text-gray-400'}`}>
-              AUDIO: {isSoundEnabled ? 'ENABLED' : 'DISABLED'}
-            </span>
           </div>
           <div className="flex items-center space-x-2">
             <Cpu className="h-3 w-3 text-green-400" />
