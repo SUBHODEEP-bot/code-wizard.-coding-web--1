@@ -70,7 +70,7 @@ Each example should be complete, functional, and clearly separated from others. 
           'Authorization': `Bearer ${this.openaiApiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'gpt-4.1-2025-04-14',
           messages: messages,
           max_tokens: 3000,
           temperature: 0.7
@@ -264,6 +264,13 @@ EXAMPLE FORMAT TO FOLLOW:
       }
     } catch (error) {
       console.error('Error in processPrompt:', error);
+      
+      // Add more detailed error logging
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      
       throw error;
     }
 
