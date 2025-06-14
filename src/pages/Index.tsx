@@ -6,10 +6,12 @@ import { FeatureCard } from '@/components/FeatureCard';
 import { LanguageSelector, programmingLanguages, ProgrammingLanguage } from '@/components/LanguageSelector';
 import { LanguageTranslator } from '@/components/LanguageTranslator';
 import { HackerTerminal } from '@/components/HackerTerminal';
-import { Code, Zap, Shield, Cpu, Network } from 'lucide-react';
+import { Code, Zap, Shield, Cpu, Network, Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { features } from '@/data/features';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 // Core Module Components
 import { CodeExplainer } from '@/components/CodeExplainer';
@@ -37,6 +39,7 @@ import { PairProgramming } from '@/components/PairProgramming';
 import { InteractiveTutor } from '@/components/InteractiveTutor';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [selectedFeature, setSelectedFeature] = useState('prompt-to-code');
   const [selectedLanguage, setSelectedLanguage] = useState<ProgrammingLanguage>(programmingLanguages[0]);
   const [code, setCode] = useState('');
@@ -199,6 +202,15 @@ const Index = () => {
             </div>
             
             <div className="flex items-center space-x-4">
+              <Button
+                onClick={() => navigate('/')}
+                size="sm"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-mono border-0 transition-all duration-300"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                HOME_PAGE
+              </Button>
+              
               {!isLanguageTranslator && (
                 <LanguageSelector 
                   selectedLanguage={selectedLanguage}
