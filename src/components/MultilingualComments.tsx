@@ -4,70 +4,71 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { MessageSquare, Languages, Globe } from 'lucide-react';
+import { Globe, Languages, FileText } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const MultilingualComments = () => {
   const [code, setCode] = useState('');
   const [programmingLanguage, setProgrammingLanguage] = useState('');
-  const [commentLanguage, setCommentLanguage] = useState('');
-  const [commentStyle, setCommentStyle] = useState('');
+  const [targetLanguage, setTargetLanguage] = useState('');
   const [commentedCode, setCommentedCode] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const { playMechanicalSound } = useSoundEffects();
 
   const programmingLanguages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
   ];
 
-  const commentLanguages = [
-    'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Korean', 'Arabic', 'Hindi', 'Portuguese', 'Russian', 'Italian'
-  ];
-
-  const commentStyles = [
-    'Detailed', 'Concise', 'Educational', 'Professional', 'Beginner-Friendly', 'Technical'
+  const spokenLanguages = [
+    'English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean', 'Arabic', 'Hindi'
   ];
 
   const handleAddComments = async () => {
-    if (!code.trim() || !programmingLanguage || !commentLanguage) {
+    if (!code.trim() || !programmingLanguage || !targetLanguage) {
       toast({
         title: "Missing Information",
-        description: "Please provide code, programming language, and comment language",
+        description: "Please provide code, programming language, and target language",
         variant: "destructive"
       });
       return;
     }
 
+    playMechanicalSound();
     setIsProcessing(true);
-    const prompt = `Add ${commentLanguage} comments to this ${programmingLanguage} code:
+    
+    const prompt = `Add comprehensive comments to this ${programmingLanguage} code in ${targetLanguage} language:
 
 Code:
 ${code}
 
-Comment Requirements:
-- Language: ${commentLanguage}
-- Style: ${commentStyle || 'Professional'}
-- Add inline comments explaining logic
-- Add block comments for functions/classes
-- Explain complex algorithms and data structures
-- Make comments clear and helpful for developers
+Please:
+1. Add detailed comments explaining the logic in ${targetLanguage}
+2. Comment complex algorithms and data structures
+3. Explain function purposes and parameters
+4. Add inline comments for tricky code sections
+5. Include header comments for classes/modules
+6. Maintain proper formatting and indentation
+7. Use appropriate comment syntax for ${programmingLanguage}
 
-Please maintain the original code structure and add appropriate comments in ${commentLanguage}.`;
+Make the comments educational and helpful for developers who speak ${targetLanguage}.`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'multilingual-comments', 'OpenAI');
+      const result = await aiService.processPrompt(prompt, 'multilingual-comments', 'Gemini');
       setCommentedCode(result);
       toast({
         title: "Comments Added",
-        description: `Comments added in ${commentLanguage}`,
+        description: `Code commented in ${targetLanguage}`,
         className: "bg-gray-900 border-green-500 text-green-400"
       });
     } catch (error) {
       console.error('Comment generation failed:', error);
       toast({
-        title: "Comment Generation Failed",
-        description: "Failed to add comments. Please try again.",
+        title: "Processing Failed",
+        description: "Failed to add multilingual comments",
         variant: "destructive"
       });
     } finally {
@@ -80,24 +81,27 @@ Please maintain the original code structure and add appropriate comments in ${co
       <div className="w-1/2 border-r border-green-500/30 flex flex-col bg-gray-950/50">
         <div className="p-6 border-b border-green-500/20 bg-gradient-to-r from-gray-900 to-gray-800">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="p-2 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg">
-              <MessageSquare className="h-5 w-5 text-white" />
+            <div className="p-2 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-lg">
+              <Globe className="h-5 w-5 text-white" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-white font-mono">MULTILINGUAL_COMMENTS</h2>
-              <p className="text-sm text-gray-300 font-mono">Add comments in different languages</p>
+              <p className="text-sm text-gray-300 font-mono">Add comments in any language</p>
             </div>
           </div>
-          <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 font-mono">
-            <Globe className="h-3 w-3 mr-1" />
-            OpenAI GPT-4
+          <Badge className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border-0 font-mono">
+            <Languages className="h-3 w-3 mr-1" />
+            Gemini AI
           </Badge>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={programmingLanguage} onValueChange={setProgrammingLanguage}>
+            <Select value={programmingLanguage} onValueChange={(value) => {
+              playMechanicalSound();
+              setProgrammingLanguage(value);
+            }}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select programming language..." />
               </SelectTrigger>
@@ -113,12 +117,15 @@ Please maintain the original code structure and add appropriate comments in ${co
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">COMMENT_LANGUAGE</label>
-            <Select value={commentLanguage} onValueChange={setCommentLanguage}>
+            <Select value={targetLanguage} onValueChange={(value) => {
+              playMechanicalSound();
+              setTargetLanguage(value);
+            }}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select comment language..." />
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border-green-500/30">
-                {commentLanguages.map(lang => (
+                {spokenLanguages.map(lang => (
                   <SelectItem key={lang} value={lang} className="text-white font-mono">
                     {lang}
                   </SelectItem>
@@ -128,27 +135,11 @@ Please maintain the original code structure and add appropriate comments in ${co
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-green-400 mb-2 font-mono">COMMENT_STYLE</label>
-            <Select value={commentStyle} onValueChange={setCommentStyle}>
-              <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
-                <SelectValue placeholder="Select comment style (optional)..." />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-green-500/30">
-                {commentStyles.map(style => (
-                  <SelectItem key={style} value={style} className="text-white font-mono">
-                    {style}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-green-400 mb-2 font-mono">CODE_TO_COMMENT</label>
+            <label className="block text-sm font-medium text-green-400 mb-2 font-mono">SOURCE_CODE</label>
             <Textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              placeholder="Paste your code here..."
+              placeholder="Paste your code here to add multilingual comments..."
               className="bg-gray-900/80 border-green-500/30 text-white font-mono min-h-[200px]"
             />
           </div>
@@ -156,13 +147,13 @@ Please maintain the original code structure and add appropriate comments in ${co
           <Button
             onClick={handleAddComments}
             disabled={isProcessing}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-mono"
+            className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-mono"
           >
             {isProcessing ? (
               <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
             ) : (
               <>
-                <MessageSquare className="h-4 w-4 mr-2" />
+                <FileText className="h-4 w-4 mr-2" />
                 ADD_COMMENTS
               </>
             )}
@@ -175,7 +166,7 @@ Please maintain the original code structure and add appropriate comments in ${co
           code={commentedCode}
           isProcessing={isProcessing}
           error={null}
-          selectedLanguage={{ name: 'Commented Code', extension: programmingLanguage.toLowerCase(), icon: '💬', color: 'text-purple-400' }}
+          selectedLanguage={{ name: 'Commented Code', extension: programmingLanguage.toLowerCase(), icon: '🌐', color: 'text-cyan-400' }}
           selectedFeature="multilingual-comments"
         />
       </div>

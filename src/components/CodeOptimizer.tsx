@@ -8,6 +8,7 @@ import { Zap, TrendingUp, Gauge } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const CodeOptimizer = () => {
   const [code, setCode] = useState('');
@@ -16,6 +17,8 @@ export const CodeOptimizer = () => {
   const [optimizedCode, setOptimizedCode] = useState('');
   const [isOptimizing, setIsOptimizing] = useState(false);
 
+  const { playMechanicalSound } = useSoundEffects();
+
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
   ];
@@ -23,13 +26,6 @@ export const CodeOptimizer = () => {
   const optimizationTypes = [
     'Performance', 'Memory Usage', 'Readability', 'Algorithm Efficiency', 'Database Queries', 'General Optimization'
   ];
-
-  const playMechanicalKeyboardSound = () => {
-    // Mechanical keyboard click sound - sharp, crisp
-    const audio = new Audio('data:audio/wav;base64,UklGRk4EAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YSoEAACBhYqFbF1hdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB');
-    audio.volume = 0.3;
-    audio.play().catch(() => {});
-  };
 
   const handleOptimize = async () => {
     if (!code.trim() || !language) {
@@ -41,7 +37,7 @@ export const CodeOptimizer = () => {
       return;
     }
 
-    playMechanicalKeyboardSound();
+    playMechanicalSound(); // Play sound when optimizing
     setIsOptimizing(true);
     const prompt = `Optimize this ${language} code for ${optimizationType || 'general performance'}:
 
@@ -101,7 +97,10 @@ Focus on: ${optimizationType || 'overall optimization'}`;
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={setLanguage}>
+            <Select value={language} onValueChange={(value) => {
+              playMechanicalSound();
+              setLanguage(value);
+            }}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
@@ -117,7 +116,10 @@ Focus on: ${optimizationType || 'overall optimization'}`;
 
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">OPTIMIZATION_FOCUS</label>
-            <Select value={optimizationType} onValueChange={setOptimizationType}>
+            <Select value={optimizationType} onValueChange={(value) => {
+              playMechanicalSound();
+              setOptimizationType(value);
+            }}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select optimization type (optional)..." />
               </SelectTrigger>

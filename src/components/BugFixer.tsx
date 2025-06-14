@@ -8,6 +8,7 @@ import { Bug, Zap, Target } from 'lucide-react';
 import { CodeDisplay } from './CodeDisplay';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export const BugFixer = () => {
   const [code, setCode] = useState('');
@@ -16,16 +17,11 @@ export const BugFixer = () => {
   const [fixedCode, setFixedCode] = useState('');
   const [isFixing, setIsFixing] = useState(false);
 
+  const { playMechanicalSound } = useSoundEffects();
+
   const languages = [
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust', 'PHP', 'Ruby'
   ];
-
-  const playMechanicalKeyboardSound = () => {
-    // Mechanical keyboard click sound - sharp, crisp
-    const audio = new Audio('data:audio/wav;base64,UklGRk4EAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YSoEAACBhYqFbF1hdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB');
-    audio.volume = 0.3;
-    audio.play().catch(() => {});
-  };
 
   const handleFix = async () => {
     if (!code.trim() || !language) {
@@ -37,7 +33,7 @@ export const BugFixer = () => {
       return;
     }
 
-    playMechanicalKeyboardSound();
+    playMechanicalSound(); // Play sound when fixing
     setIsFixing(true);
     const prompt = `Find and fix bugs in this ${language} code:
 
@@ -99,7 +95,10 @@ Provide clean, working code with explanations.`;
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-green-400 mb-2 font-mono">PROGRAMMING_LANGUAGE</label>
-            <Select value={language} onValueChange={setLanguage}>
+            <Select value={language} onValueChange={(value) => {
+              playMechanicalSound();
+              setLanguage(value);
+            }}>
               <SelectTrigger className="bg-gray-900/80 border-green-500/30 text-white font-mono">
                 <SelectValue placeholder="Select language..." />
               </SelectTrigger>
