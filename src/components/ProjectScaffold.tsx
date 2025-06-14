@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -53,8 +52,8 @@ Please provide:
 Make it production-ready with proper structure and best practices.`;
 
     try {
-      // Use DeepSeek for best project scaffolding
-      const result = await aiService.processPrompt(prompt, 'scaffold-generator', 'DeepSeek');
+      // Use Gemini for project scaffolding
+      const result = await aiService.processPrompt(prompt, 'scaffold-generator', 'Gemini');
       setScaffoldCode(result);
       toast({
         title: "Scaffold Generated",
@@ -87,7 +86,7 @@ Make it production-ready with proper structure and best practices.`;
           </div>
           <Badge className="bg-gradient-to-r from-green-600 to-blue-600 text-white border-0 font-mono">
             <Folder className="h-3 w-3 mr-1" />
-            DeepSeek AI
+            Gemini AI
           </Badge>
         </div>
 

@@ -10,17 +10,9 @@ interface GeminiRequest {
   }[];
 }
 
-interface DeepSeekRequest {
-  model: string;
-  messages: OpenAIMessage[];
-  max_tokens: number;
-  temperature: number;
-}
-
 class AIService {
   private openaiApiKey = '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';
-  private geminiApiKey = 'AIzaSyB4frRuhdWmCrUfyUojOTYcFJ9HQFqbhTY';
-  private deepseekApiKey = 'sk-492ce24a2e0743ce98cacd3eea74667c';
+  private geminiApiKey = 'AIzaSyAxTmaNTs0N9OHkFgbw2XEZOmalMW3al7A';
 
   async callOpenAI(prompt: string, featureContext: string): Promise<string> {
     try {
@@ -103,82 +95,23 @@ class AIService {
     }
   }
 
-  async callDeepSeek(prompt: string, featureContext: string): Promise<string> {
-    try {
-      console.log('Calling DeepSeek API for:', featureContext);
-      const messages: OpenAIMessage[] = [
-        {
-          role: 'system',
-          content: `You are an expert coding assistant specialized in ${featureContext}. Provide accurate, well-structured code solutions with proper explanations and optimizations.`
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ];
-
-      const requestBody: DeepSeekRequest = {
-        model: 'deepseek-coder',
-        messages: messages,
-        max_tokens: 3000,
-        temperature: 0.7
-      };
-
-      const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.deepseekApiKey}`
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('DeepSeek API error:', response.status, errorData);
-        throw new Error(`DeepSeek API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
-      }
-
-      const data = await response.json();
-      console.log('DeepSeek response received successfully');
-      return data.choices[0].message.content;
-    } catch (error) {
-      console.error('DeepSeek API error:', error);
-      throw new Error('Failed to process request with DeepSeek');
-    }
-  }
-
   // Smart provider selection based on task type
-  getOptimalProvider(featureId: string): 'OpenAI' | 'Gemini' | 'DeepSeek' {
-    // For code generation, optimization, and refactoring - DeepSeek is best
-    const codeFeatures = [
-      'prompt-to-code', 'refactoring', 'code-optimization', 'bug-fixing', 
-      'style-formatter', 'scaffold-generator', 'translator', 'test-generator'
-    ];
-    
+  getOptimalProvider(featureId: string): 'OpenAI' | 'Gemini' {
     // For explanations and analysis - OpenAI is best
     const explanationFeatures = [
-      'code-explanation', 'error-explainer', 'code-review', 'code-reviewer'
+      'code-explanation', 'error-explainer', 'code-review', 'code-reviewer', 'pair-programming'
     ];
     
-    // For complex analysis and suggestions - Gemini is best
-    const analysisFeatures = [
-      'complexity-analyzer', 'library-suggester', 'security-scanner'
-    ];
-
-    if (codeFeatures.includes(featureId)) {
-      return 'DeepSeek';
-    } else if (explanationFeatures.includes(featureId)) {
+    // For all other features - use Gemini as default
+    if (explanationFeatures.includes(featureId)) {
       return 'OpenAI';
-    } else if (analysisFeatures.includes(featureId)) {
-      return 'Gemini';
     }
 
-    // Default to DeepSeek for code-related tasks
-    return 'DeepSeek';
+    // Default to Gemini for all other tasks
+    return 'Gemini';
   }
 
-  async processPrompt(prompt: string, featureId: string, apiProvider: 'OpenAI' | 'Gemini' | 'DeepSeek' | 'Auto' | 'Both'): Promise<string> {
+  async processPrompt(prompt: string, featureId: string, apiProvider: 'OpenAI' | 'Gemini' | 'Auto' | 'Both'): Promise<string> {
     const featureContext = this.getFeatureContext(featureId);
     console.log('Processing prompt for feature:', featureId, 'with provider:', apiProvider);
 
@@ -194,35 +127,26 @@ class AIService {
         return await this.callOpenAI(prompt, featureContext);
       } else if (apiProvider === 'Gemini') {
         return await this.callGemini(prompt, featureContext);
-      } else if (apiProvider === 'DeepSeek') {
-        return await this.callDeepSeek(prompt, featureContext);
       } else if (apiProvider === 'Both') {
         // Try optimal provider first, then fallback to others
         const optimalProvider = this.getOptimalProvider(featureId);
         try {
-          if (optimalProvider === 'DeepSeek') {
-            return await this.callDeepSeek(prompt, featureContext);
-          } else if (optimalProvider === 'OpenAI') {
+          if (optimalProvider === 'OpenAI') {
             return await this.callOpenAI(prompt, featureContext);
           } else {
             return await this.callGemini(prompt, featureContext);
           }
         } catch (error) {
           console.log(`${optimalProvider} failed, trying fallback...`);
-          // Try other providers as fallback
+          // Try other provider as fallback
           try {
-            if (optimalProvider !== 'DeepSeek') {
-              return await this.callDeepSeek(prompt, featureContext);
+            if (optimalProvider !== 'OpenAI') {
+              return await this.callOpenAI(prompt, featureContext);
             } else {
               return await this.callGemini(prompt, featureContext);
             }
           } catch (secondError) {
-            console.log('Second provider failed, trying final fallback...');
-            if (optimalProvider !== 'OpenAI') {
-              return await this.callOpenAI(prompt, featureContext);
-            } else {
-              throw error; // Re-throw original error
-            }
+            throw error; // Re-throw original error
           }
         }
       }

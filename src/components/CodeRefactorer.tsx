@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,8 +50,8 @@ Please:
 Focus on: ${refactorType || 'general code quality improvements'}`;
 
     try {
-      // Use DeepSeek for best code refactoring
-      const result = await aiService.processPrompt(prompt, 'refactoring', 'DeepSeek');
+      // Use Gemini for code refactoring
+      const result = await aiService.processPrompt(prompt, 'refactoring', 'Gemini');
       setRefactoredCode(result);
       toast({
         title: "Code Refactored",
@@ -86,7 +85,7 @@ Focus on: ${refactorType || 'general code quality improvements'}`;
           </div>
           <Badge className="bg-gradient-to-r from-purple-600 to-violet-600 text-white border-0 font-mono">
             <Wrench className="h-3 w-3 mr-1" />
-            DeepSeek AI
+            Gemini AI
           </Badge>
         </div>
 

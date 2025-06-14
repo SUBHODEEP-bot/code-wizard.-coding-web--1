@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,8 +50,8 @@ Please:
 Return the formatted code with explanations of changes.`;
 
     try {
-      // Use DeepSeek for best code formatting
-      const result = await aiService.processPrompt(prompt, 'style-formatter', 'DeepSeek');
+      // Use Gemini for code formatting
+      const result = await aiService.processPrompt(prompt, 'style-formatter', 'Gemini');
       setFormattedCode(result);
       toast({
         title: "Code Formatted",
@@ -86,7 +85,7 @@ Return the formatted code with explanations of changes.`;
           </div>
           <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 font-mono">
             <Wand2 className="h-3 w-3 mr-1" />
-            DeepSeek AI
+            Gemini AI
           </Badge>
         </div>
 

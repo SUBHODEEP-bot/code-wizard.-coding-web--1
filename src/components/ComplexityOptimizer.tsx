@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -53,7 +52,7 @@ Please:
 Focus specifically on improving ${optimizationType.toLowerCase()}.`;
 
     try {
-      const result = await aiService.processPrompt(prompt, 'complexity-optimizer', 'DeepSeek');
+      const result = await aiService.processPrompt(prompt, 'complexity-optimizer', 'Gemini');
       setOptimizedCode(result);
       toast({
         title: "Code Optimized",
@@ -87,7 +86,7 @@ Focus specifically on improving ${optimizationType.toLowerCase()}.`;
           </div>
           <Badge className="bg-gradient-to-r from-yellow-600 to-orange-600 text-white border-0 font-mono">
             <TrendingUp className="h-3 w-3 mr-1" />
-            DeepSeek AI
+            Gemini AI
           </Badge>
         </div>
 
