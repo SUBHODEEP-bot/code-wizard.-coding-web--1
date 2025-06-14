@@ -1,3 +1,4 @@
+
 import { 
   Code, 
   Search, 
@@ -18,7 +19,8 @@ import {
   FileCode,
   MessageSquare,
   Zap,
-  Users
+  Users,
+  BookOpen // Added BookOpen here
 } from 'lucide-react';
 
 export interface Feature {
@@ -26,9 +28,9 @@ export interface Feature {
   name: string;
   description: string;
   icon: any;
-  category: 'core' | 'advanced' | 'interactive';
+  category: 'core' | 'advanced' | 'interactive' | 'ai-learner'; // Added 'ai-learner'
   apiProvider: 'Gemini' | 'OpenAI' | 'Auto' | 'Both';
-  examplePrompt: string;
+  examplePrompt?: string; // Made examplePrompt optional
   tips?: string;
 }
 
@@ -243,9 +245,10 @@ export const features: Feature[] = [
   {
     id: 'ai-code-learner',
     name: 'AI Code Learner',
-    icon: 'BookOpen',
+    icon: BookOpen, // Used BookOpen component here
     category: 'ai-learner',
     apiProvider: 'Both',
     description: 'Learn how to code in any programming language using powerful AI.'
+    // No examplePrompt or tips needed for this one by default
   }
 ];
