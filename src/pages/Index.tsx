@@ -6,10 +6,12 @@ import { FeatureCard } from '@/components/FeatureCard';
 import { LanguageSelector, programmingLanguages, ProgrammingLanguage } from '@/components/LanguageSelector';
 import { LanguageTranslator } from '@/components/LanguageTranslator';
 import { HackerTerminal } from '@/components/HackerTerminal';
+import { SoundToggle } from '@/components/SoundToggle';
 import { Code, Zap, Shield, Cpu, Network } from 'lucide-react';
 import { features } from '@/data/features';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 // Core Module Components
 import { CodeExplainer } from '@/components/CodeExplainer';
@@ -43,34 +45,15 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const playFeatureSound = (featureId: string) => {
-    // Different sound patterns for different feature categories
-    let audioData = '';
-    
-    if (['prompt-to-code', 'code-explanation', 'code-review', 'bug-fixing', 'code-optimization', 'refactoring'].includes(featureId)) {
-      // Core modules - mechanical keyboard sound
-      audioData = 'data:audio/wav;base64,UklGRk4EAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YSoEAACBhYqFbF1hdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB';
-    } else if (['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(featureId)) {
-      // Advanced protocols - sophisticated beep
-      audioData = 'data:audio/wav;base64,UklGRh4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVIBAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB1K47O2cRAcWVLjpzrJuHQU+ltXuu3UsB+jD7e2LTAYYUrzop7JUEAZel+rxtmAcBzWb0PPEhzEIHWO86qRYBQNQstX40YBAAhVUuev4vF0dAhN92OvQwH0dBH2o3vmjRwjrxeHWo2gSETm//fyTRwHrxeH1xGAVFWK36c7XfTUIHW26xuCNRxJAmtP004s3BydOjO7j23UpCCWG0OzHgkYOOILM8NuJNwJOq8OppGcR';
-    } else if (featureId === 'translator') {
-      // Neural interface - unique tone
-      audioData = 'data:audio/wav;base64,UklGRnYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVIBAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhB1K47O2cRAcWVLjpzrJuHQU+ltXuu3UsB+jD7e2LTAYYUrzop7JUEAZel+rxtmAcBzWb0PPEhzEIHWO86qRYBQNQstX40YBAAhVUuev4vF0dAhN92OvQwH0dBH2o3vmjRwjrxeHWo2gSETm//fyTRwHrxeH1xGAVFWK36c7XfTUIHW26xuCNRxJAmtP004s3BydOjO7j23UpCCWG0OzHgkYOOILM8NuJNwJOq8OppGcR';
-    }
-    
-    if (audioData) {
-      const audio = new Audio(audioData);
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
-    }
-  };
+  // Sound effects hook
+  const { isSoundEnabled, toggleSound, playMechanicalSound } = useSoundEffects();
 
   const handlePromptSubmit = async (prompt: string) => {
     const currentFeature = features.find(f => f.id === selectedFeature);
     if (!currentFeature) return;
 
     console.log('Processing prompt:', prompt, 'for feature:', selectedFeature, 'in language:', selectedLanguage.name);
-    playFeatureSound(selectedFeature);
+    playMechanicalSound(); // Play sound when processing starts
     setIsProcessing(true);
     setError(null);
     
@@ -201,7 +184,7 @@ const Index = () => {
       <Sidebar 
         selectedFeature={selectedFeature} 
         onFeatureSelect={(feature) => {
-          playFeatureSound(feature);
+          playMechanicalSound(); // Play sound on feature selection
           setSelectedFeature(feature);
         }}
         selectedLanguage={selectedLanguage}
@@ -228,10 +211,17 @@ const Index = () => {
               {!isLanguageTranslator && (
                 <LanguageSelector 
                   selectedLanguage={selectedLanguage}
-                  onLanguageChange={setSelectedLanguage}
+                  onLanguageChange={(lang) => {
+                    playMechanicalSound(); // Play sound on language change
+                    setSelectedLanguage(lang);
+                  }}
                   compact={true}
                 />
               )}
+              <SoundToggle 
+                isSoundEnabled={isSoundEnabled}
+                onToggle={toggleSound}
+              />
               <div className="flex items-center space-x-2 px-3 py-1 bg-gray-900 border border-green-500/30 rounded-lg">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -309,6 +299,9 @@ const Index = () => {
               <span className="text-blue-400">LANG: {selectedLanguage.name.toUpperCase()}</span>
             )}
             <span className="text-purple-400">MODEL: MULTI_NEURAL</span>
+            <span className={`${isSoundEnabled ? 'text-green-400' : 'text-gray-400'}`}>
+              AUDIO: {isSoundEnabled ? 'ENABLED' : 'DISABLED'}
+            </span>
           </div>
           <div className="flex items-center space-x-2">
             <Cpu className="h-3 w-3 text-green-400" />
