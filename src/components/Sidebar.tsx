@@ -1,7 +1,10 @@
+
 import { useState } from 'react';
 import { ChevronRight, ChevronDown, Terminal, Cpu, Shield, BookOpen } from 'lucide-react';
 import { features } from '@/data/features';
 import { ProgrammingLanguage } from './LanguageSelector';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface SidebarProps {
   selectedFeature: string;
@@ -11,6 +14,7 @@ interface SidebarProps {
 
 export const Sidebar = ({ selectedFeature, onFeatureSelect, selectedLanguage }: SidebarProps) => {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['core', 'advanced', 'interactive', 'ai-learner']);
+  const { t } = useTranslation();
 
   const toggleCategory = (category: string) => {
     setExpandedCategories(prev => 
@@ -23,25 +27,25 @@ export const Sidebar = ({ selectedFeature, onFeatureSelect, selectedLanguage }: 
   const categories = [
     {
       id: 'core',
-      name: 'CORE_MODULES',
+      name: t('CORE_MODULES'),
       icon: Cpu,
       features: features.filter(f => f.category === 'core')
     },
     {
       id: 'advanced',
-      name: 'ADVANCED_PROTOCOLS',
+      name: t('ADVANCED_PROTOCOLS'),
       icon: Shield,
       features: features.filter(f => f.category === 'advanced')
     },
     {
       id: 'interactive',
-      name: 'NEURAL_INTERFACE',
+      name: t('NEURAL_INTERFACE'),
       icon: Terminal,
       features: features.filter(f => f.category === 'interactive')
     },
     {
       id: 'ai-learner',
-      name: 'AI_CODE_LEARNER',
+      name: t('AI_CODE_LEARNER'),
       icon: BookOpen,
       features: features.filter(f => f.category === 'ai-learner')
     }
@@ -55,14 +59,19 @@ export const Sidebar = ({ selectedFeature, onFeatureSelect, selectedLanguage }: 
       </div>
 
       <div className="p-4 border-b border-green-500/30 bg-gradient-to-r from-gray-900 to-gray-800 relative z-10">
-        <h2 className="text-lg font-semibold text-white mb-2 font-mono tracking-wider">
-          <span className="text-green-400">AI</span>_NEURAL_<span className="text-blue-400">MODULES</span>
-        </h2>
-        <p className="text-sm text-gray-300 font-mono">Select your coding protocol</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-semibold text-white mb-2 font-mono tracking-wider">
+              <span className="text-green-400">{t('AI_NEURAL_MODULES')}</span>
+            </h2>
+            <p className="text-sm text-gray-300 font-mono">{t('Select your coding protocol')}</p>
+          </div>
+          <LanguageSwitcher />
+        </div>
         <div className="mt-3 flex items-center justify-between">
           <div className="flex items-center space-x-2 text-xs text-green-400 font-mono">
             <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-            <span>NEURAL_NETWORKS_ACTIVE</span>
+            <span>{t('NEURAL_NETWORKS_ACTIVE')}</span>
           </div>
           <div className="text-xs text-blue-400 font-mono">
             {selectedLanguage.icon} {selectedLanguage.name}
@@ -129,12 +138,12 @@ export const Sidebar = ({ selectedFeature, onFeatureSelect, selectedLanguage }: 
       <div className="p-3 border-t border-green-500/30 bg-gray-900/80 relative z-10">
         <div className="text-xs font-mono space-y-1">
           <div className="flex justify-between text-green-400">
-            <span>SYS_STATUS:</span>
-            <span>OPERATIONAL</span>
+            <span>{t('SYS_STATUS')}:</span>
+            <span>{t('OPERATIONAL')}</span>
           </div>
           <div className="flex justify-between text-blue-400">
-            <span>PROTOCOLS:</span>
-            <span>{features.length} LOADED</span>
+            <span>{t('PROTOCOLS')}:</span>
+            <span>{features.length} {t('LOADED')}</span>
           </div>
         </div>
       </div>
