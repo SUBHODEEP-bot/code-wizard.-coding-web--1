@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-export const ChatbotIcon = ({ className = "", size = 150 }: { className?: string; size?: number }) => {
+export const ChatbotIcon = ({ className = "", size = 150, isWaving = false }: { className?: string; size?: number; isWaving?: boolean }) => {
   return (
     <svg 
       width={size} 
@@ -36,9 +36,11 @@ export const ChatbotIcon = ({ className = "", size = 150 }: { className?: string
       <text x="75" y="78" textAnchor="middle" fontSize="8" fill="white" fontWeight="bold" fontFamily="Arial, sans-serif">HI!</text>
       
       {/* Right Arm (Waving) */}
-      <rect x="90" y="65" width="12" height="4" rx="2" fill="#3B82F6"/>
-      <rect x="102" y="60" width="4" height="12" rx="2" fill="#3B82F6"/>
-      <circle cx="104" cy="58" r="3" fill="#3B82F6"/>
+      <g style={{ transformOrigin: '90px 67px' }} className={isWaving ? "animate-wave-arm" : ""}>
+        <rect x="90" y="65" width="12" height="4" rx="2" fill="#3B82F6"/>
+        <rect x="102" y="60" width="4" height="12" rx="2" fill="#3B82F6"/>
+        <circle cx="104" cy="58" r="3" fill="#3B82F6"/>
+      </g>
       
       {/* Left Arm (Down) */}
       <rect x="48" y="65" width="12" height="4" rx="2" fill="#3B82F6"/>
@@ -59,3 +61,4 @@ export const ChatbotIcon = ({ className = "", size = 150 }: { className?: string
     </svg>
   );
 };
+

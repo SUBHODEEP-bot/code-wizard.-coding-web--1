@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChatbotIcon } from './ChatbotIcon';
 import { X, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,23 @@ export const FloatingChatbot = () => {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [animateBot, setAnimateBot] = useState(false);
+
+  useEffect(() => {
+    const animationPlayedSessionKey = 'chatbotHomeAnimationPlayed_v1';
+    const hasAnimationPlayed = sessionStorage.getItem(animationPlayedSessionKey);
+
+    if (!hasAnimationPlayed) {
+      setAnimateBot(true);
+      sessionStorage.setItem(animationPlayedSessionKey, 'true');
+
+      const timer = setTimeout(() => {
+        setAnimateBot(false);
+      }, 20000); // 20 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const handleSendMessage = async () => {
     if (!message.trim()) {
@@ -62,16 +78,17 @@ export const FloatingChatbot = () => {
       <div className="fixed bottom-6 right-6 z-[9999]">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="group relative transition-all duration-300 hover:scale-110 active:scale-95"
+          className={`group relative transition-all duration-300 hover:scale-110 active:scale-95 ${animateBot ? 'animate-bounce-soft' : ''}`}
           aria-label="Open AI Chatbot"
         >
           <div className="relative">
             <ChatbotIcon 
-              size={80} 
-              className="drop-shadow-lg group-hover:drop-shadow-xl transition-all duration-300" 
+              size={104} 
+              className="drop-shadow-lg group-hover:drop-shadow-xl transition-all duration-300"
+              isWaving={animateBot} 
             />
-            {/* Pulse animation */}
-            <div className="absolute inset-0 rounded-full bg-blue-400 opacity-20 animate-ping"></div>
+            {/* Pulse animation - disabled during initial animation */}
+            <div className={`absolute inset-0 rounded-full bg-blue-400 opacity-20 ${animateBot ? '' : 'animate-ping'}`}></div>
           </div>
         </button>
       </div>
@@ -83,7 +100,7 @@ export const FloatingChatbot = () => {
             <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-t-lg p-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-bold flex items-center gap-2">
-                  <ChatbotIcon size={24} />
+                  <ChatbotIcon size={24} isWaving={false} />
                   AI Assistant
                 </CardTitle>
                 <Button
