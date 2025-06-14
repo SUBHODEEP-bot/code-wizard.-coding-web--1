@@ -10,5 +10,22 @@
   "SYS_STATUS": "সিস্টেম_স্ট্যাটাস",
   "OPERATIONAL": "সক্রিয়",
   "PROTOCOLS": "প্রোটোকল",
-  "LOADED": "লোড হয়েছে"
+  "LOADED": "লোড হয়েছে",
+  "AI_CODER_NEXUS": "এআই_কোডার_নেক্সাস",
+  "HOME_PAGE": "হোম_পেজ",
+  "NEURAL_APIS_ONLINE": "নিউরাল_এপিআই_অনলাইন",
+  "SECURE_CONNECTION": "নিরাপদ_সংযোগ",
+  "STATUS": "স্ট্যাটাস",
+  "LANG": "ভাষা",
+  "MODEL": "মডেল",
+  "MULTI_NEURAL": "মাল্টি_নিউরাল",
+  "CPU": "সিপিইউ",
+  "NET_STATUS": "নেট",
+  "NET_SECURE": "নিরাপদ",
+  "SUCCESS_CODE_PROCESSED": "সাফল্য: কোড প্রক্রিয়াজাত",
+  "PROCESSED_CODE_USING": "{{provider}} ব্যবহার করে {{language}} কোড প্রক্রিয়াজাত করা হয়েছে",
+  "ERROR_PROCESSING_FAILED": "ত্রুটি: প্রক্রিয়াজাতকরণ ব্যর্থ হয়েছে",
+  "CORE_MODULE_SELECT_FEATURE": "মূল_মডিউল - বৈশিষ্ট্য নির্বাচন করুন",
+  "ADVANCED_PROTOCOL_SELECT_FEATURE": "উন্নত_প্রোটোকল - বৈশিষ্ট্য নির্বাচন করুন",
+  "NEURAL_INTERFACE_SELECT_FEATURE": "নিউরাল_ইন্টারফেস - বৈশিষ্ট্য নির্বাচন করুন"
 }

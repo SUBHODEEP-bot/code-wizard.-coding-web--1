@@ -10,5 +10,22 @@
   "SYS_STATUS": "सिस्टम_स्थिति",
   "OPERATIONAL": "संचालित",
   "PROTOCOLS": "प्रोटोकॉल",
-  "LOADED": "लोडेड"
+  "LOADED": "लोडेड",
+  "AI_CODER_NEXUS": "एआई_कोडर_नेक्सस",
+  "HOME_PAGE": "होम_पेज",
+  "NEURAL_APIS_ONLINE": "न्यूरल_एपीआई_ऑनलाइन",
+  "SECURE_CONNECTION": "सुरक्षित_कनेक्शन",
+  "STATUS": "स्थिति",
+  "LANG": "भाषा",
+  "MODEL": "मॉडल",
+  "MULTI_NEURAL": "मल्टी_न्यूरल",
+  "CPU": "सीपीयू",
+  "NET_STATUS": "नेट",
+  "NET_SECURE": "सुरक्षित",
+  "SUCCESS_CODE_PROCESSED": "सफलता: कोड संसाधित",
+  "PROCESSED_CODE_USING": "{{provider}} का उपयोग करके {{language}} कोड संसाधित किया गया",
+  "ERROR_PROCESSING_FAILED": "त्रुटि: प्रसंस्करण विफल",
+  "CORE_MODULE_SELECT_FEATURE": "कोर_मॉड्यूल - सुविधा चुनें",
+  "ADVANCED_PROTOCOL_SELECT_FEATURE": "एडवांस्ड_प्रोटोकॉल - सुविधा चुनें",
+  "NEURAL_INTERFACE_SELECT_FEATURE": "न्यूरल_इंटरफेस - सुविधा चुनें"
 }

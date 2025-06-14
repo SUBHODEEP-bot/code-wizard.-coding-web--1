@@ -12,6 +12,7 @@ import { features } from '@/data/features';
 import { aiService } from '@/services/aiService';
 import { toast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 // Core Module Components
 import { CodeExplainer } from '@/components/CodeExplainer';
@@ -43,6 +44,7 @@ import { AICodeLearner } from '@/components/AICodeLearner';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [selectedFeature, setSelectedFeature] = useState('prompt-to-code');
   const [selectedLanguage, setSelectedLanguage] = useState<ProgrammingLanguage>(programmingLanguages[0]);
   const [code, setCode] = useState('');
@@ -88,8 +90,8 @@ const Index = () => {
       
       setCode(result);
       toast({
-        title: "SUCCESS: Code Processed",
-        description: `Processed ${selectedLanguage.name} code using ${currentFeature.apiProvider}`,
+        title: t("SUCCESS_CODE_PROCESSED"),
+        description: t("PROCESSED_CODE_USING", { language: selectedLanguage.name, provider: currentFeature.apiProvider }),
         className: "bg-gray-900 border-green-500 text-green-400",
       });
     } catch (error) {
@@ -97,7 +99,7 @@ const Index = () => {
       const errorMessage = error instanceof Error ? error.message : 'SYSTEM ERROR: Unknown failure detected';
       setError(errorMessage);
       toast({
-        title: "ERROR: Processing Failed",
+        title: t("ERROR_PROCESSING_FAILED"),
         description: errorMessage,
         variant: "destructive",
         className: "bg-red-900 border-red-500 text-red-400",
@@ -127,7 +129,7 @@ const Index = () => {
       case 'refactoring':
         return <CodeRefactorer />;
       default:
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">CORE_MODULE - Select Feature</div>;
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">{t('CORE_MODULE_SELECT_FEATURE')}</div>;
     }
   };
 
@@ -150,7 +152,7 @@ const Index = () => {
       case 'code-reviewer':
         return <CodeReviewAssistant />;
       default:
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">ADVANCED_PROTOCOL - Select Feature</div>;
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">{t('ADVANCED_PROTOCOL_SELECT_FEATURE')}</div>;
     }
   };
 
@@ -169,9 +171,11 @@ const Index = () => {
       case 'coding-tutor':
         return <InteractiveTutor />;
       default:
-        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">NEURAL_INTERFACE - Select Feature</div>;
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">{t('NEURAL_INTERFACE_SELECT_FEATURE')}</div>;
     }
   };
+
+  const titleParts = t('AI_CODER_NEXUS').split('_');
 
   return (
     <div className="flex h-screen bg-black text-green-400 relative overflow-hidden">
@@ -199,9 +203,17 @@ const Index = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-white font-mono tracking-wider">
-                  <span className="text-green-400">AI</span>_CODER_<span className="text-blue-400">NEXUS</span>
+                  {titleParts.length === 3 ? (
+                    <>
+                      <span className="text-green-400">{titleParts[0]}</span>
+                      _{titleParts[1]}_
+                      <span className="text-blue-400">{titleParts[2]}</span>
+                    </>
+                  ) : (
+                    t('AI_CODER_NEXUS')
+                  )}
                 </h1>
-                <HackerTerminal text="NEURAL_NETWORK_ACTIVE" isActive={true} />
+                <HackerTerminal text={t('NEURAL_NETWORKS_ACTIVE')} isActive={true} />
               </div>
             </div>
             
@@ -212,7 +224,7 @@ const Index = () => {
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-mono border-0 transition-all duration-300"
               >
                 <Home className="h-4 w-4 mr-2" />
-                HOME_PAGE
+                {t('HOME_PAGE')}
               </Button>
               
               {!isLanguageTranslator && (
@@ -228,11 +240,11 @@ const Index = () => {
                   <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
                   <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                 </div>
-                <span className="text-xs text-green-400 font-mono">NEURAL_APIS_ONLINE</span>
+                <span className="text-xs text-green-400 font-mono">{t('NEURAL_APIS_ONLINE')}</span>
               </div>
               <div className="flex items-center space-x-2 px-3 py-1 bg-gray-900 border border-blue-500/30 rounded-lg">
                 <Shield className="h-4 w-4 text-blue-400" />
-                <span className="text-xs text-blue-400 font-mono">SECURE_CONNECTION</span>
+                <span className="text-xs text-blue-400 font-mono">{t('SECURE_CONNECTION')}</span>
               </div>
             </div>
           </div>
@@ -298,17 +310,17 @@ const Index = () => {
         {/* Status bar */}
         <div className="h-8 bg-gray-950 border-t border-green-500/30 flex items-center justify-between px-4 text-xs font-mono flex-shrink-0">
           <div className="flex items-center space-x-4">
-            <span className="text-green-400">STATUS: OPERATIONAL</span>
+            <span className="text-green-400">{t('STATUS')}: {t('OPERATIONAL')}</span>
             {!isLanguageTranslator && (
-              <span className="text-blue-400">LANG: {selectedLanguage.name.toUpperCase()}</span>
+              <span className="text-blue-400">{t('LANG')}: {selectedLanguage.name.toUpperCase()}</span>
             )}
-            <span className="text-purple-400">MODEL: MULTI_NEURAL</span>
+            <span className="text-purple-400">{t('MODEL')}: {t('MULTI_NEURAL')}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Cpu className="h-3 w-3 text-green-400" />
-            <span className="text-green-400">CPU: 100%</span>
+            <span className="text-green-400">{t('CPU')}: 100%</span>
             <Network className="h-3 w-3 text-blue-400" />
-            <span className="text-blue-400">NET: SECURE</span>
+            <span className="text-blue-400">{t('NET_STATUS')}: {t('NET_SECURE')}</span>
           </div>
         </div>
       </div>
