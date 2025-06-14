@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChatbotIcon } from './ChatbotIcon';
 import { X, MessageCircle } from 'lucide-react';
@@ -42,7 +43,7 @@ export const FloatingChatbot = () => {
     try {
       const enhancedPrompt = `You are an intelligent AI assistant created by Subhodeep Pal for his advanced coding learning platform. Your purpose is to help users understand and use this website effectively.
 
-Website Name: Not specified (custom AI-based coding learning platform)
+Website Name: AI Coder Nexus (Neural Coding Interface)
 Creator: Subhodeep Pal
 Goal: Help users learn coding faster using AI tools, voice command coding, and intelligent module-based interfaces.
 
@@ -59,7 +60,7 @@ Goal: Help users learn coding faster using AI tools, voice command coding, and i
    - Finds and explains bugs in code.
 
 4. **Code Refactoring** (Gemini)
-   - Cleans and improves user’s code.
+   - Cleans and improves user's code.
 
 5. **Language Translator** (Gemini)
    - Converts code comments or instructions into other languages.
@@ -76,7 +77,7 @@ Goal: Help users learn coding faster using AI tools, voice command coding, and i
    - Explains programming errors in human-friendly language.
 
 9. **Library Suggester** (Gemini)
-   - Suggests libraries based on user’s task.
+   - Suggests libraries based on user's task.
 
 10. **Code Formatter** (Gemini)
     - Auto-formats messy code into standard clean code.
@@ -85,7 +86,7 @@ Goal: Help users learn coding faster using AI tools, voice command coding, and i
     - Checks for potential vulnerabilities in code.
 
 12. **Unit Test Generator** (Gemini)
-    - Generates unit tests for user’s functions or classes.
+    - Generates unit tests for user's functions or classes.
 
 13. **Complexity Analyzer** (Gemini)
     - Shows time/space complexity of a code block.
@@ -106,8 +107,8 @@ Goal: Help users learn coding faster using AI tools, voice command coding, and i
 
 - Always respond only about the features and functionality of Subhodeep Pal's coding website.
 - If a user asks a coding-related question, check which module matches best and suggest it.
-- If user asks something outside the website’s scope, politely respond:
-  “I'm your coding assistant for this platform. Please ask anything related to the features you see here.”
+- If user asks something outside the website's scope, politely respond:
+  "I'm your coding assistant for this platform. Please ask anything related to the features you see here."
 
 💬 Example Queries You Should Answer:
 - "How can I generate code from voice?"
@@ -120,7 +121,17 @@ Use a friendly, concise tone that feels futuristic, technical, and accessible to
 User question: ${message}
 
 Please provide a helpful response about this coding learning platform and its features.`;
-      const result = await aiService.processPrompt(enhancedPrompt, 'pair-programming', 'Auto');
+
+      // Try Gemini first as fallback for quota issues
+      let result;
+      try {
+        result = await aiService.processPrompt(enhancedPrompt, 'pair-programming', 'Gemini');
+      } catch (geminiError) {
+        console.log('Gemini failed, trying OpenAI as backup:', geminiError);
+        // If Gemini fails, try OpenAI
+        result = await aiService.processPrompt(enhancedPrompt, 'pair-programming', 'OpenAI');
+      }
+      
       setResponse(result);
       toast({
         title: "Response Generated",
@@ -129,12 +140,43 @@ Please provide a helpful response about this coding learning platform and its fe
       });
     } catch (error) {
       console.error('Chatbot error:', error);
-      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred. Check console for details.";
-      toast({
-        title: "Error",
-        description: `Failed to get response: ${errorMessage}`,
-        variant: "destructive"
-      });
+      
+      // Handle specific API quota errors
+      if (error instanceof Error && error.message.includes('quota')) {
+        setResponse(`I apologize, but I'm currently experiencing high demand. However, I can still help you! Here are some key features of our AI Coder Nexus platform:
+
+🚀 **Available Tools:**
+• **Prompt to Code** - Convert natural language to code
+• **Code Debugger** - Find and fix bugs in your code
+• **Project Scaffold Generator** - Generate full project structures
+• **Voice Command Coding** - Code using voice commands
+• **Code Refactoring** - Clean and optimize your existing code
+
+📝 **How to get started:**
+1. Click "LAUNCH INTERFACE" to access the main coding tools
+2. Choose the feature that matches your needs
+3. Follow the prompts for each specific tool
+
+💡 **Popular features:**
+- Use "Prompt to Code" for generating code from descriptions
+- Try "Code Explanation" to understand complex code
+- Use "Voice Assistant" for hands-free coding
+
+Feel free to ask about any specific feature you'd like to explore!`);
+        
+        toast({
+          title: "Service Temporarily Limited",
+          description: "Using fallback responses. Full service will resume shortly.",
+          className: "bg-yellow-600 border-yellow-500 text-white"
+        });
+      } else {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        toast({
+          title: "Error",
+          description: `Failed to get response: ${errorMessage}`,
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -164,7 +206,7 @@ Please provide a helpful response about this coding learning platform and its fe
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-bold flex items-center gap-2">
                   <ChatbotIcon size={24} isWaving={false} />
-                  Subhodeep's AI Coding Assistant
+                  AI Coder Nexus Assistant
                 </CardTitle>
                 <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)} className="text-white hover:bg-blue-400 h-6 w-6 p-0">
                   <X className="h-4 w-4" />
@@ -176,7 +218,7 @@ Please provide a helpful response about this coding learning platform and its fe
               <div className="space-y-4">
                 {/* Welcome Message */}
                 {!response && !message && <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-sm text-blue-800">🚀 Hi! I'm your AI coding assistant . I can help you with:</p>
+                    <p className="text-sm text-blue-800">🚀 Welcome to AI Coder Nexus! I'm your intelligent coding assistant.</p>
                     <ul className="text-xs text-blue-700 mt-2 space-y-1">
                       <li>• Voice Command Coding</li>
                       <li>• Code Explanation & Debugging</li>

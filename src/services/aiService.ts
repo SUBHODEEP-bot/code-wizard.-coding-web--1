@@ -69,7 +69,7 @@ Each example should be complete, functional, and clearly separated from others. 
           'Authorization': `Bearer ${this.openaiApiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4.1-2025-04-14',
+          model: 'gpt-4o-mini',
           messages: messages,
           max_tokens: 3000,
           temperature: 0.7
@@ -79,11 +79,17 @@ Each example should be complete, functional, and clearly separated from others. 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response from OpenAI' }));
         console.error('OpenAI API error:', response.status, errorData);
+        
+        // Handle quota exceeded specifically
+        if (response.status === 429) {
+          throw new Error(`OpenAI API quota exceeded. Please try again later or contact support.`);
+        }
+        
         throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || errorData.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
-      console.log('OpenAI response received successfully. Data:', JSON.stringify(data, null, 2));
+      console.log('OpenAI response received successfully.');
       
       if (data.choices && data.choices.length > 0 && data.choices[0].message && typeof data.choices[0].message.content === 'string') {
         return data.choices[0].message.content;
@@ -163,11 +169,17 @@ Please help with: ${enhancedPrompt}`
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response from Gemini' }));
         console.error('Gemini API error:', response.status, errorData);
+        
+        // Handle quota exceeded specifically for Gemini too
+        if (response.status === 429) {
+          throw new Error(`Gemini API quota exceeded. Please try again later.`);
+        }
+        
         throw new Error(`Gemini API error: ${response.status} - ${errorData.error?.message || errorData.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
-      console.log('Gemini response received successfully. Data:', JSON.stringify(data, null, 2));
+      console.log('Gemini response received successfully.');
 
       if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0 && typeof data.candidates[0].content.parts[0].text === 'string') {
         return data.candidates[0].content.parts[0].text;
@@ -226,28 +238,23 @@ EXAMPLE FORMAT TO FOLLOW:
 
   // Smart provider selection based on task type
   getOptimalProvider(featureId: string): 'OpenAI' | 'Gemini' {
-    // For explanations and analysis - OpenAI is best
+    // For explanations and analysis - OpenAI is best (but prefer Gemini due to quota issues)
     const explanationFeatures = [
       'code-explanation', 'error-explainer', 'code-review', 'code-reviewer', 'pair-programming'
     ];
     
-    // For all other features - use Gemini as default
-    if (explanationFeatures.includes(featureId)) {
-      return 'OpenAI';
-    }
-
-    // Default to Gemini for all other tasks
+    // Prefer Gemini as default due to OpenAI quota limitations
     return 'Gemini';
   }
 
-  // ... keep existing code (processPrompt method, but ensure its own catch block correctly re-throws or details errors)
+  // ... keep existing code (processPrompt method with improved error handling)
   async processPrompt(prompt: string, featureId: string, apiProvider: 'OpenAI' | 'Gemini' | 'Auto' | 'Both'): Promise<string> {
     const featureContext = this.getFeatureContext(featureId);
     console.log('Processing prompt for feature:', featureId, 'with provider:', apiProvider);
 
     try {
       if (apiProvider === 'Auto') {
-        // Auto-select best provider based on feature
+        // Auto-select best provider based on feature (prefer Gemini due to quota issues)
         const optimalProvider = this.getOptimalProvider(featureId);
         console.log('Auto-selected provider:', optimalProvider);
         apiProvider = optimalProvider;
@@ -258,26 +265,17 @@ EXAMPLE FORMAT TO FOLLOW:
       } else if (apiProvider === 'Gemini') {
         return await this.callGemini(prompt, featureContext);
       } else if (apiProvider === 'Both') {
-        // Try optimal provider first, then fallback to others
-        const optimalProvider = this.getOptimalProvider(featureId);
+        // Try Gemini first due to quota issues, then fallback to OpenAI
         try {
-          if (optimalProvider === 'OpenAI') {
-            return await this.callOpenAI(prompt, featureContext);
-          } else {
-            return await this.callGemini(prompt, featureContext);
-          }
+          return await this.callGemini(prompt, featureContext);
         } catch (error) {
-          console.log(`${optimalProvider} failed, trying fallback...`, error);
-          // Try other provider as fallback
+          console.log('Gemini failed, trying OpenAI as backup...', error);
+          // Try OpenAI as fallback
           try {
-            if (optimalProvider !== 'OpenAI') {
-              return await this.callOpenAI(prompt, featureContext);
-            } else {
-              return await this.callGemini(prompt, featureContext);
-            }
+            return await this.callOpenAI(prompt, featureContext);
           } catch (secondError) {
-            console.error('Fallback provider also failed:', secondError);
-            throw error; // Re-throw original error or potentially the secondError if more informative
+            console.error('Both providers failed:', secondError);
+            throw error; // Re-throw original Gemini error
           }
         }
       }
@@ -298,6 +296,7 @@ EXAMPLE FORMAT TO FOLLOW:
     throw new Error('Invalid API provider specified or unhandled execution path in processPrompt.');
   }
 
+  // ... keep existing code (getFeatureContext method)
   private getFeatureContext(featureId: string): string {
     const contexts: Record<string, string> = {
       'prompt-to-code': 'code generation from natural language',
