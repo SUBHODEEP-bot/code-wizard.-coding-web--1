@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChatbotIcon } from './ChatbotIcon';
 import { X, MessageCircle } from 'lucide-react';
@@ -43,8 +44,44 @@ export const FloatingChatbot = () => {
     setIsProcessing(true);
     
     try {
+      const enhancedPrompt = `You are an intelligent AI assistant created by Subhodeep Pal for his advanced coding learning platform. Your purpose is to help users understand and use this website effectively.
+
+Website Name: AI-Powered Coding Learning Platform
+Creator: Subhodeep Pal
+Goal: Help users learn coding faster using AI tools, voice command coding, and intelligent module-based interfaces.
+
+🧠 ACTIVE FEATURES:
+
+1. **Prompt to Code** (Gemini + Python Core) - Converts natural language prompts into working code
+2. **Code Explanation** (OpenAI) - Explains code line by line for better understanding
+3. **Code Debugger** (Gemini) - Finds and explains bugs in code
+4. **Code Refactoring** (Gemini) - Cleans and improves user's code
+5. **Language Translator** (Gemini) - Converts code comments or instructions into other languages
+6. **Project Scaffold Generator** (Gemini AI) - Builds full project structure from project type and features
+7. **Voice Command Coding** (OpenAI + Speech API) - Converts user voice into code
+8. **Error Explainer** (OpenAI) - Explains programming errors in human-friendly language
+9. **Library Suggester** (Gemini) - Suggests libraries based on user's task
+10. **Code Formatter** (Gemini) - Auto-formats messy code into standard clean code
+11. **Security Scanner** (Gemini) - Checks for potential vulnerabilities in code
+12. **Unit Test Generator** (Gemini) - Generates unit tests for functions or classes
+13. **Complexity Analyzer** (Gemini) - Shows time/space complexity of code blocks
+14. **Code Snippet Search** (OpenAI) - Finds relevant code snippets for specific tasks
+15. **Multilingual Comments** (OpenAI) - Adds comments to code in multiple languages
+16. **AI Pair Programming** (Both Gemini & OpenAI) - Works as a live AI programming buddy
+17. **Interactive Coding Tutor** (OpenAI) - Teaches users in real-time with Q&A and correction
+
+📌 SYSTEM BEHAVIOR RULES:
+- Always respond only about the features and functionality of Subhodeep Pal's coding website
+- If a user asks a coding-related question, check which module matches best and suggest it
+- If user asks something outside the website's scope, politely respond: "I'm your coding assistant for this platform. Please ask anything related to the features you see here."
+- Use a friendly, concise tone that feels futuristic, technical, and accessible to beginners and intermediate developers
+
+User question: ${message}
+
+Please provide a helpful response about this coding learning platform and its features.`;
+
       const result = await aiService.processPrompt(
-        `User question: ${message}\n\nPlease provide a helpful and concise answer about this website or general assistance.`,
+        enhancedPrompt,
         'pair-programming',
         'Auto'
       );
@@ -101,7 +138,7 @@ export const FloatingChatbot = () => {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-bold flex items-center gap-2">
                   <ChatbotIcon size={24} isWaving={false} />
-                  AI Assistant
+                  Subhodeep's AI Coding Assistant
                 </CardTitle>
                 <Button
                   variant="ghost"
@@ -120,8 +157,16 @@ export const FloatingChatbot = () => {
                 {!response && !message && (
                   <div className="bg-blue-50 p-3 rounded-lg">
                     <p className="text-sm text-blue-800">
-                      👋 Hi! I'm your AI assistant. Ask me anything about this website or any coding questions!
+                      🚀 Hi! I'm your AI coding assistant for Subhodeep Pal's learning platform. I can help you with:
                     </p>
+                    <ul className="text-xs text-blue-700 mt-2 space-y-1">
+                      <li>• Voice Command Coding</li>
+                      <li>• Code Explanation & Debugging</li>
+                      <li>• Project Scaffold Generation</li>
+                      <li>• AI Pair Programming</li>
+                      <li>• And 13+ more coding features!</li>
+                    </ul>
+                    <p className="text-xs text-blue-600 mt-2">Ask me about any feature you'd like to explore! 🤖</p>
                   </div>
                 )}
 
@@ -149,7 +194,7 @@ export const FloatingChatbot = () => {
                     <div className="bg-gray-100 p-2 rounded-lg">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                        Thinking...
+                        Processing...
                       </div>
                     </div>
                   </div>
@@ -163,7 +208,7 @@ export const FloatingChatbot = () => {
                 <Textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Ask me anything..."
+                  placeholder="Ask about coding features, voice commands, or any platform tool..."
                   className="flex-1 min-h-[40px] resize-none text-sm"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
