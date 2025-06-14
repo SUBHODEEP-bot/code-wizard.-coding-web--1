@@ -59,7 +59,7 @@ export const FloatingChatbot = () => {
   return (
     <>
       {/* Floating Chatbot Icon */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-[9999]">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="group relative transition-all duration-300 hover:scale-110 active:scale-95"
@@ -78,7 +78,7 @@ export const FloatingChatbot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 max-w-[calc(100vw-2rem)] animate-scale-in">
+        <div className="fixed bottom-24 right-6 z-[9999] w-80 max-w-[calc(100vw-2rem)] animate-scale-in">
           <Card className="bg-white border-2 border-blue-200 shadow-2xl">
             <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-t-lg p-3">
               <div className="flex items-center justify-between">
