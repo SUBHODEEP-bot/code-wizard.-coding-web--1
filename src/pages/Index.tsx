@@ -28,6 +28,14 @@ import { SecurityScanner } from '@/components/SecurityScanner';
 import { UnitTestGenerator } from '@/components/UnitTestGenerator';
 import { ComplexityAnalyzer } from '@/components/ComplexityAnalyzer';
 
+// Neural Interface Components
+import { VoiceAssistant } from '@/components/VoiceAssistant';
+import { CodeSummarizer } from '@/components/CodeSummarizer';
+import { MultilingualComments } from '@/components/MultilingualComments';
+import { ComplexityOptimizer } from '@/components/ComplexityOptimizer';
+import { PairProgramming } from '@/components/PairProgramming';
+import { InteractiveTutor } from '@/components/InteractiveTutor';
+
 const Index = () => {
   const [selectedFeature, setSelectedFeature] = useState('prompt-to-code');
   const [selectedLanguage, setSelectedLanguage] = useState<ProgrammingLanguage>(programmingLanguages[0]);
@@ -116,10 +124,11 @@ const Index = () => {
     }
   };
 
-  // Check if current feature is language translator or advanced protocol or core module
+  // Check if current feature is language translator or advanced protocol or core module or neural interface
   const isLanguageTranslator = selectedFeature === 'translator';
   const isAdvancedProtocol = ['scaffold-generator', 'error-explainer', 'library-suggester', 'style-formatter', 'security-scanner', 'test-generator', 'complexity-analyzer', 'code-reviewer'].includes(selectedFeature);
   const isCoreModule = ['code-explanation', 'code-review', 'bug-fixing', 'code-optimization', 'refactoring'].includes(selectedFeature);
+  const isNeuralInterface = ['voice-assistant', 'code-summarizer', 'multilingual-comments', 'complexity-optimizer', 'pair-programming', 'coding-tutor'].includes(selectedFeature);
 
   const renderCoreModule = () => {
     switch (selectedFeature) {
@@ -158,6 +167,25 @@ const Index = () => {
         return <CodeReviewAssistant />;
       default:
         return <div className="flex items-center justify-center h-full text-gray-400 font-mono">ADVANCED_PROTOCOL - Select Feature</div>;
+    }
+  };
+
+  const renderNeuralInterface = () => {
+    switch (selectedFeature) {
+      case 'voice-assistant':
+        return <VoiceAssistant />;
+      case 'code-summarizer':
+        return <CodeSummarizer />;
+      case 'multilingual-comments':
+        return <MultilingualComments />;
+      case 'complexity-optimizer':
+        return <ComplexityOptimizer />;
+      case 'pair-programming':
+        return <PairProgramming />;
+      case 'coding-tutor':
+        return <InteractiveTutor />;
+      default:
+        return <div className="flex items-center justify-center h-full text-gray-400 font-mono">NEURAL_INTERFACE - Select Feature</div>;
     }
   };
 
@@ -232,6 +260,10 @@ const Index = () => {
         ) : isAdvancedProtocol ? (
           <div className="flex-1 overflow-hidden">
             {renderAdvancedProtocol()}
+          </div>
+        ) : isNeuralInterface ? (
+          <div className="flex-1 overflow-hidden">
+            {renderNeuralInterface()}
           </div>
         ) : (
           // ... keep existing code (main prompt-to-code interface)
