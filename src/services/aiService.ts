@@ -1,3 +1,4 @@
+
 interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -21,22 +22,38 @@ class AIService {
       const messages: OpenAIMessage[] = [
         {
           role: 'system',
-          content: `You are an expert coding assistant specialized in ${featureContext}. When generating multiple examples or solutions, ALWAYS format them with clear numbering and separation. Use this format:
+          content: `You are an expert coding assistant specialized in ${featureContext}. When generating multiple examples or solutions, you MUST format them with clear numbering and separation. STRICTLY follow this format:
 
+---
 ## Example 1: [Brief Description]
 \`\`\`language
 // Code here
 \`\`\`
+**Explanation:** Brief explanation of this example.
 
+---
 ## Example 2: [Brief Description]
 \`\`\`language
 // Code here
 \`\`\`
+**Explanation:** Brief explanation of this example.
 
+---
 ## Example 3: [Brief Description]
 \`\`\`language
 // Code here
 \`\`\`
+**Explanation:** Brief explanation of this example.
+
+---
+
+CRITICAL RULES:
+1. Use horizontal lines (---) between each example
+2. Each example must have a clear numbered header
+3. Each code block must be complete and functional
+4. Add explanations after each code block
+5. Never mix examples together
+6. Always separate different approaches clearly
 
 Each example should be complete, functional, and clearly separated from others. Provide accurate, well-structured explanations and analysis with clear insights.`
         },
@@ -85,22 +102,38 @@ Each example should be complete, functional, and clearly separated from others. 
           {
             parts: [
               {
-                text: `As an expert coding assistant specialized in ${featureContext}, when generating multiple examples or solutions, ALWAYS format them with clear numbering and separation using this format:
+                text: `As an expert coding assistant specialized in ${featureContext}, when generating multiple examples or solutions, you MUST format them with clear numbering and separation. STRICTLY follow this format:
 
+---
 ## Example 1: [Brief Description]
 \`\`\`language
 // Code here
 \`\`\`
+**Explanation:** Brief explanation of this example.
 
+---
 ## Example 2: [Brief Description]
 \`\`\`language
 // Code here
 \`\`\`
+**Explanation:** Brief explanation of this example.
 
+---
 ## Example 3: [Brief Description]
 \`\`\`language
 // Code here
 \`\`\`
+**Explanation:** Brief explanation of this example.
+
+---
+
+CRITICAL RULES:
+1. Use horizontal lines (---) between each example
+2. Each example must have a clear numbered header
+3. Each code block must be complete and functional
+4. Add explanations after each code block
+5. Never mix examples together
+6. Always separate different approaches clearly
 
 Each example should be complete, functional, and clearly separated from others.
 
@@ -144,12 +177,31 @@ Please help with: ${enhancedPrompt}`
     if (hasMultipleRequest || featureContext === 'code generation from natural language') {
       return `${prompt}
 
-IMPORTANT: If generating multiple examples or solutions, please format each one with clear numbering and separation:
-- Use "## Example 1:", "## Example 2:", etc. as headers
-- Put each code example in separate code blocks
-- Provide a brief description for each example
+CRITICAL FORMATTING REQUIREMENTS:
+- If generating multiple examples or solutions, use horizontal lines (---) to separate each example
+- Use clear numbered headers: "## Example 1:", "## Example 2:", etc.
+- Put each code example in separate, complete code blocks
+- Add explanations after each code block
+- Never mix different examples together
 - Make each example complete and functional on its own
-- Clearly separate different approaches or variations`;
+- Always provide clear visual separation between different approaches
+
+EXAMPLE FORMAT TO FOLLOW:
+---
+## Example 1: [Description]
+\`\`\`language
+// Complete code here
+\`\`\`
+**Explanation:** How this works...
+
+---
+## Example 2: [Description]
+\`\`\`language
+// Complete code here
+\`\`\`
+**Explanation:** How this works...
+
+---`;
     }
 
     return prompt;
