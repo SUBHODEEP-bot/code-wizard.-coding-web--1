@@ -5,9 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Code, Terminal, Zap, Shield, ArrowRight, Cpu, Network, Play, ChevronRight, Sparkles, Brain, Rocket } from 'lucide-react';
 import { features } from '@/data/features';
 import { useNavigate } from 'react-router-dom';
+
 const Home = () => {
   const navigate = useNavigate();
   const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
+
   const stats = [{
     label: 'AI Models',
     value: '3+',
@@ -28,15 +30,26 @@ const Home = () => {
   const coreFeatures = features.filter(f => f.category === 'core');
   const advancedFeatures = features.filter(f => f.category === 'advanced');
   const interactiveFeatures = features.filter(f => f.category === 'interactive');
-  return <div className="min-h-screen bg-black text-green-400 relative overflow-hidden">
-      {/* Matrix background effect */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-900/20 via-transparent to-blue-900/20"></div>
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-green-950 text-green-400 relative overflow-hidden">
+      {/* Enhanced Matrix background effect */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-900/30 via-blue-900/20 to-purple-900/20"></div>
         <div className="hacker-grid absolute inset-0"></div>
+        <div className="circuit-pattern absolute inset-0"></div>
+      </div>
+
+      {/* Animated background particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-green-400 rounded-full opacity-70 animate-pulse"></div>
+        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-blue-400 rounded-full opacity-50 animate-ping"></div>
+        <div className="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-purple-400 rounded-full opacity-60 animate-pulse"></div>
+        <div className="absolute top-1/6 right-1/2 w-1 h-1 bg-cyan-400 rounded-full opacity-40 animate-ping"></div>
       </div>
 
       {/* Header */}
-      <header className="relative z-50 bg-gray-950/90 backdrop-blur-sm border-b border-green-500/30">
+      <header className="relative z-50 bg-gradient-to-r from-gray-950/90 via-gray-900/80 to-gray-950/90 backdrop-blur-sm border-b border-green-500/30">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -91,7 +104,6 @@ const Home = () => {
                 <ChevronRight className="h-5 w-5 ml-2" />
               </Button>
               
-              
             </div>
           </div>
 
@@ -110,7 +122,7 @@ const Home = () => {
           <div className="absolute inset-0 opacity-10">
             <img src="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=5760&q=80" alt="Code Background" className="w-full h-full object-cover rounded-2xl" />
           </div>
-          <div className="relative bg-gray-950/70 backdrop-blur-sm rounded-2xl border border-green-500/30 p-8">
+          <div className="relative bg-gradient-to-r from-gray-950/80 via-gray-900/70 to-gray-950/80 backdrop-blur-sm rounded-2xl border border-green-500/30 p-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {stats.map((stat, index) => <div key={index} className="text-center space-y-3">
                   <div className="mx-auto w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center border border-green-500/30">
@@ -250,7 +262,7 @@ const Home = () => {
 
       {/* CTA Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-        <div className="text-center bg-gradient-to-r from-gray-950/80 to-gray-900/80 rounded-2xl border border-green-500/30 p-12 backdrop-blur-sm">
+        <div className="text-center bg-gradient-to-r from-gray-950/90 via-gray-900/80 to-gray-950/90 rounded-2xl border border-green-500/30 p-12 backdrop-blur-sm shadow-2xl">
           <div className="space-y-6">
             <h2 className="text-4xl md:text-5xl font-bold text-white font-mono">
               READY TO <span className="text-green-400">EVOLVE</span> YOUR CODE?
@@ -269,7 +281,7 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 bg-gray-950/90 border-t border-green-500/30 mt-20">
+      <footer className="relative z-10 bg-gradient-to-r from-gray-950/95 via-gray-900/90 to-gray-950/95 border-t border-green-500/30 mt-20">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
@@ -295,6 +307,8 @@ const Home = () => {
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default Home;
