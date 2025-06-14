@@ -1,4 +1,3 @@
-
 interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -17,14 +16,33 @@ class AIService {
   async callOpenAI(prompt: string, featureContext: string): Promise<string> {
     try {
       console.log('Calling OpenAI API for:', featureContext);
+      const enhancedPrompt = this.enhancePromptForFormatting(prompt, featureContext);
+      
       const messages: OpenAIMessage[] = [
         {
           role: 'system',
-          content: `You are an expert coding assistant specialized in ${featureContext}. Provide accurate, well-structured explanations and analysis with clear insights.`
+          content: `You are an expert coding assistant specialized in ${featureContext}. When generating multiple examples or solutions, ALWAYS format them with clear numbering and separation. Use this format:
+
+## Example 1: [Brief Description]
+\`\`\`language
+// Code here
+\`\`\`
+
+## Example 2: [Brief Description]
+\`\`\`language
+// Code here
+\`\`\`
+
+## Example 3: [Brief Description]
+\`\`\`language
+// Code here
+\`\`\`
+
+Each example should be complete, functional, and clearly separated from others. Provide accurate, well-structured explanations and analysis with clear insights.`
         },
         {
           role: 'user',
-          content: prompt
+          content: enhancedPrompt
         }
       ];
 
@@ -60,12 +78,33 @@ class AIService {
   async callGemini(prompt: string, featureContext: string): Promise<string> {
     try {
       console.log('Calling Gemini API for:', featureContext);
+      const enhancedPrompt = this.enhancePromptForFormatting(prompt, featureContext);
+      
       const requestBody: GeminiRequest = {
         contents: [
           {
             parts: [
               {
-                text: `As an expert coding assistant specialized in ${featureContext}, please help with: ${prompt}`
+                text: `As an expert coding assistant specialized in ${featureContext}, when generating multiple examples or solutions, ALWAYS format them with clear numbering and separation using this format:
+
+## Example 1: [Brief Description]
+\`\`\`language
+// Code here
+\`\`\`
+
+## Example 2: [Brief Description]
+\`\`\`language
+// Code here
+\`\`\`
+
+## Example 3: [Brief Description]
+\`\`\`language
+// Code here
+\`\`\`
+
+Each example should be complete, functional, and clearly separated from others.
+
+Please help with: ${enhancedPrompt}`
               }
             ]
           }
@@ -93,6 +132,27 @@ class AIService {
       console.error('Gemini API error:', error);
       throw new Error('Failed to process request with Gemini');
     }
+  }
+
+  private enhancePromptForFormatting(prompt: string, featureContext: string): string {
+    // Check if the prompt is asking for multiple examples
+    const multipleKeywords = ['examples', 'different ways', 'various', 'multiple', 'several', '3', 'three', 'more than one'];
+    const hasMultipleRequest = multipleKeywords.some(keyword => 
+      prompt.toLowerCase().includes(keyword)
+    );
+
+    if (hasMultipleRequest || featureContext === 'code generation from natural language') {
+      return `${prompt}
+
+IMPORTANT: If generating multiple examples or solutions, please format each one with clear numbering and separation:
+- Use "## Example 1:", "## Example 2:", etc. as headers
+- Put each code example in separate code blocks
+- Provide a brief description for each example
+- Make each example complete and functional on its own
+- Clearly separate different approaches or variations`;
+    }
+
+    return prompt;
   }
 
   // Smart provider selection based on task type
