@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -107,9 +106,10 @@ const Home = () => {
               </Button>
               
               <Button 
+                onClick={() => navigate('/app')}
                 variant="outline"
                 size="lg"
-                className="border-green-500/50 text-green-400 hover:bg-green-500/10 font-mono text-lg px-8 py-4"
+                className="border-purple-500/50 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400 font-mono text-lg px-8 py-4 transition-all duration-300"
               >
                 <Terminal className="h-5 w-5 mr-2" />
                 VIEW_PROTOCOLS
