@@ -1,73 +1,55 @@
-# Welcome to your Lovable project
+# Welcome to your Project
 
-## Project info
+## Project Info
 
-**URL**: https://lovable.dev/projects/3402021f-d07e-4e8c-9f96-698fe53bb16c
+**Live URL**: https://ai-coder-nexus.netlify.app/
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 💻 How Can I Edit This Code?
 
-**Use Lovable**
+There are several ways to edit and run this project based on your preferred workflow.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3402021f-d07e-4e8c-9f96-698fe53bb16c) and start prompting.
+### ✨ Option 1: Use Your Local IDE
 
-Changes made via Lovable will be committed automatically to this repo.
+If you want to work locally using VS Code or any other editor, follow these steps:
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Step 1: Clone the repository using your Git URL
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Step 2: Navigate to the project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Step 3: Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+🛠️ Tech Stack Used
+This project is built using:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+⚡ Vite
 
-**Use GitHub Codespaces**
+⚛️ React
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+🧠 TypeScript
 
-## What technologies are used for this project?
+🎨 Tailwind CSS
 
-This project is built with:
+🧩 shadcn-ui
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 🙌 A Note from the Creator
 
-Simply open [Lovable](https://lovable.dev/projects/3402021f-d07e-4e8c-9f96-698fe53bb16c) and click on Share -> Publish.
+Thank you for checking out this project!
 
-## Can I connect a custom domain to my Lovable project?
+This app was built with love and attention to detail to solve a real-world need — generating professional certificates instantly and affordably.
 
-Yes, you can!
+If you have any feedback, suggestions, or ideas to improve this platform, feel free to open an issue or contribute!
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+⭐ If you like this project, don't forget to star the repo and share it with others!
